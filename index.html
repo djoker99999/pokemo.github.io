@@ -850,6 +850,25 @@
       background: linear-gradient(45deg, #03A9F4, #00BCD4);
     }
 
+    /* Styles pour l'indicateur de sauvegarde automatique */
+    .save-indicator {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 0.8em;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .save-indicator.show {
+      opacity: 1;
+    }
+
     @media (min-width: 768px) {
       .game-container {
         padding: 30px;
@@ -939,6 +958,9 @@
   </style>
 </head>
 <body>
+  <!-- Indicateur de sauvegarde automatique -->
+  <div class="save-indicator" id="saveIndicator">Sauvegarde automatique...</div>
+
   <!-- Affichage du pool de roses -->
   <div class="pool-display" id="poolDisplay">
     <h3>🌹 Pool de Roses</h3>
@@ -1088,10 +1110,13 @@
       'https://i.gifer.com/3nRA.gif',
       'https://i.gifer.com/ZDch.gif',
       'https://i.gifer.com/4QYe.gif',
-      'https://i.gifer.com/KbVT.gif',
       'https://i.gifer.com/5GpG.gif'
     ];
     let currentHiveIndex = 0;
+
+    // Variables pour la sauvegarde automatique
+    let autoSaveInterval;
+    let lastSaveTime = 0;
 
     // Fonction pour générer un nombre aléatoire entre min et max
     function getRandomCoins(min, max) {
@@ -1105,6 +1130,7 @@
     const attackBtn = document.getElementById("attackBtn");
     const gameContainer = document.getElementById("gameContainer");
     const comboIndicator = document.getElementById("comboIndicator");
+    const saveIndicator = document.getElementById("saveIndicator");
     
     const victoryPopup = document.getElementById("victoryPopup");
     const popupRewardImage = document.getElementById("popupRewardImage");
@@ -1383,6 +1409,9 @@
                              currentDifficulty === "hard" ? "difficile" : "extrême";
         message.textContent = `Ruche ${difficultyName} - À tout moment la ruche peut se briser...`;
       }, 2000);
+      
+      // Sauvegarde automatique après cette action
+      autoSave();
     }
 
     function changeHiveImage() {
@@ -1395,6 +1424,9 @@
                              currentDifficulty === "hard" ? "difficile" : "extrême";
         message.textContent = `Ruche ${difficultyName} - À tout moment la ruche peut se briser...`;
       }, 2000);
+      
+      // Sauvegarde automatique après cette action
+      autoSave();
     }
 
     function showCoinsEarned(target, coins) {
@@ -1541,6 +1573,9 @@
           endGame();
           addWinner("Dresseur", "RUCHÉ CASSÉE!", true);
         }
+        
+        // Sauvegarde automatique après l'attaque
+        autoSave();
       }, animationDuration);
     }
 
@@ -1615,6 +1650,9 @@
       setTimeout(() => {
         victoryPopup.classList.add('active');
       }, 10);
+      
+      // Sauvegarde automatique après la victoire
+      autoSave();
     }
 
     function closeVictoryPopup() {
@@ -1646,6 +1684,9 @@
       
       const btnEl = document.getElementById(`mode${mode}`);
       if (btnEl) btnEl.classList.add('active');
+      
+      // Sauvegarde automatique après changement de mode
+      autoSave();
     }
 
     function setDifficulty(difficulty) {
@@ -1659,6 +1700,9 @@
       goldBar.className = "gold-bar " + difficulty;
       
       initGame();
+      
+      // Sauvegarde automatique après changement de difficulté
+      autoSave();
     }
 
     function addWinner(username, prize, isHive = false) {
@@ -1677,6 +1721,9 @@
       }
       
       updateWinnersDisplay();
+      
+      // Sauvegarde automatique après ajout d'un gagnant
+      autoSave();
     }
 
     function updateWinnersDisplay() {
@@ -1727,8 +1774,117 @@
     }
 
     // =============================================
-    // SYSTÈME DE SAUVEGARDE
+    // SYSTÈME DE SAUVEGARDE AUTOMATIQUE
     // =============================================
+
+    function autoSave() {
+      // Éviter de sauvegarder trop fréquemment
+      const now = Date.now();
+      if (now - lastSaveTime < 5000) { // 5 secondes minimum entre les sauvegardes
+        return;
+      }
+      
+      lastSaveTime = now;
+      
+      const saveData = {
+        currentDifficulty,
+        maxHP,
+        currentHP,
+        pokemon1HP,
+        pokemon2HP,
+        totalCoins,
+        rosePool,
+        hitsSinceLastPoolAddition,
+        totalHits,
+        hitsUntilCoin,
+        rosesEarnedThisGold,
+        currentHiveIndex,
+        winnersList,
+        timestamp: new Date().toISOString()
+      };
+      
+      try {
+        localStorage.setItem('jeremDresseurSave', JSON.stringify(saveData));
+        
+        // Afficher l'indicateur de sauvegarde
+        saveIndicator.classList.add('show');
+        setTimeout(() => {
+          saveIndicator.classList.remove('show');
+        }, 2000);
+      } catch (e) {
+        console.error("Erreur lors de la sauvegarde automatique:", e);
+      }
+    }
+
+    function loadAutoSave() {
+      try {
+        const savedData = localStorage.getItem('jeremDresseurSave');
+        if (savedData) {
+          const saveData = JSON.parse(savedData);
+          
+          // Valider les données de sauvegarde
+          if (!saveData.currentDifficulty || !saveData.maxHP || !saveData.currentHP) {
+            throw new Error("Format de sauvegarde invalide");
+          }
+          
+          // Appliquer les données de sauvegarde
+          currentDifficulty = saveData.currentDifficulty;
+          maxHP = saveData.maxHP;
+          currentHP = saveData.currentHP;
+          pokemon1HP = saveData.pokemon1HP || 200;
+          pokemon2HP = saveData.pokemon2HP || 500;
+          totalCoins = saveData.totalCoins || 0;
+          rosePool = saveData.rosePool || 0;
+          hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
+          totalHits = saveData.totalHits || 0;
+          hitsUntilCoin = saveData.hitsUntilCoin || 4;
+          rosesEarnedThisGold = saveData.rosesEarnedThisGold || 0;
+          currentHiveIndex = saveData.currentHiveIndex || 0;
+          winnersList = saveData.winnersList || [];
+          
+          // Mettre à jour l'interface
+          setDifficulty(currentDifficulty);
+          goldBar.style.backgroundImage = `url('${hiveImages[currentHiveIndex]}')`;
+          
+          // Mettre à jour l'état des Pokémon
+          if (pokemon1HP <= 0) {
+            document.getElementById('pokemon1').classList.add('defeated');
+          } else {
+            document.getElementById('pokemon1').classList.remove('defeated');
+          }
+          
+          if (pokemon2HP <= 0) {
+            document.getElementById('pokemon2').classList.add('defeated');
+          } else {
+            document.getElementById('pokemon2').classList.remove('defeated');
+          }
+          
+          // Mettre à jour les affichages
+          updateUI();
+          updateWinnersDisplay();
+          updatePoolDisplay();
+          
+          message.textContent = "✅ Sauvegarde automatique chargée !";
+          
+          // Afficher l'indicateur de sauvegarde
+          saveIndicator.textContent = "Sauvegarde automatique chargée !";
+          saveIndicator.classList.add('show');
+          setTimeout(() => {
+            saveIndicator.classList.remove('show');
+          }, 2000);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement de la sauvegarde automatique:", error);
+        message.textContent = "❌ Erreur lors du chargement de la sauvegarde automatique";
+      }
+    }
+
+    function startAutoSaveInterval() {
+      // Sauvegarde automatique toutes les 30 secondes
+      autoSaveInterval = setInterval(() => {
+        autoSave();
+      }, 30000); // 30 secondes
+    }
 
     function exportSaveData() {
       const saveData = {
@@ -1820,6 +1976,9 @@
             updatePoolDisplay();
             
             message.textContent = "✅ Sauvegarde importée avec succès !";
+            
+            // Sauvegarder automatiquement après importation
+            autoSave();
           } catch (error) {
             message.textContent = "❌ Erreur lors de l'importation de la sauvegarde";
           }
@@ -1877,6 +2036,9 @@
       // Mettre à jour les affichages
       updateWinnersDisplay();
       updatePoolDisplay();
+      
+      // Sauvegarde automatique après initialisation
+      autoSave();
     }
 
     // =============================================
@@ -1993,7 +2155,8 @@
     }, 1000);
 
     // Initialiser le jeu
-    initGame();
+    loadAutoSave(); // Charger la sauvegarde automatique au démarrage
+    startAutoSaveInterval(); // Démarrer l'intervalle de sauvegarde automatique
   </script>
 </body>
 </html>
