@@ -186,89 +186,6 @@
       gap: 30px;
     }
 
-    /* File d'attente au-dessus de la ruche */
-    .queue-overlay {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
-      padding: 10px 15px;
-      border-radius: 10px;
-      border: 2px solid rgba(0, 191, 255, 0.7);
-      backdrop-filter: blur(10px);
-      z-index: 20;
-      min-width: 250px;
-      max-width: 400px;
-      cursor: move;
-    }
-
-    .queue-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid rgba(0, 191, 255, 0.3);
-      user-select: none;
-    }
-
-    .queue-title {
-      font-size: 0.9em;
-      font-weight: bold;
-      color: #00bfff;
-    }
-
-    .queue-count {
-      background: rgba(0, 191, 255, 0.3);
-      color: #00bfff;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 0.8em;
-      font-weight: bold;
-    }
-
-    .queue-list {
-      max-height: 120px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .queue-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 6px 10px;
-      border-radius: 6px;
-      border-left: 3px solid #00bfff;
-      font-size: 0.8em;
-    }
-
-    .queue-username {
-      font-weight: bold;
-      color: #fff;
-    }
-
-    .queue-damage {
-      background: rgba(0, 191, 255, 0.3);
-      color: #00bfff;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 0.7em;
-    }
-
-    .queue-empty {
-      text-align: center;
-      color: #888;
-      font-style: italic;
-      padding: 10px;
-      font-size: 0.8em;
-    }
-
     .pokemon-monster {
       width: 120px;
       height: 120px;
@@ -309,23 +226,7 @@
     }
 
     .hp-bar {
-      position: absolute;
-      bottom: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 8px;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 4px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .hp-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #4CAF50, #8BC34A);
-      transition: width 0.3s ease;
-      border-radius: 4px;
+      display: none; /* Barres de vie cachées */
     }
 
     .coins-earned {
@@ -885,6 +786,46 @@
       font-size: 0.9em;
     }
 
+    /* Styles pour l'affichage du pool de roses */
+    .pool-display {
+      position: fixed;
+      top: 100px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 15px;
+      border-radius: 15px;
+      z-index: 100;
+      max-width: 200px;
+      border: 2px solid rgba(255, 105, 180, 0.7);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      cursor: move;
+    }
+
+    .pool-display h3 {
+      color: #ff69b4;
+      font-size: 1em;
+      margin-bottom: 10px;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+      user-select: none;
+    }
+
+    .pool-amount {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #ff69b4;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .pool-chance {
+      font-size: 0.8em;
+      color: #fff;
+      text-align: center;
+      margin-top: 5px;
+    }
+
     @media (min-width: 768px) {
       .game-container {
         padding: 30px;
@@ -964,15 +905,28 @@
         right: 10px;
         top: 80px;
       }
+      
+      .pool-display {
+        max-width: 180px;
+        left: 10px;
+        top: 80px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Affichage du pool de roses -->
+  <div class="pool-display" id="poolDisplay">
+    <h3>🌹 Pool de Roses</h3>
+    <div class="pool-amount" id="poolAmount">0</div>
+    <div class="pool-chance">Chance de drop: 1/500</div>
+  </div>
+
   <!-- Tableau des gagnants déplaçable -->
   <div class="winners-board" id="winnersBoard">
-    <h3>🏆 Tableau des Dresseurs</h3>
+    <h3>🏆 Historique des Gains</h3>
     <div class="winners-list" id="winnersList">
-      <div class="winners-empty">Aucun dresseur pour le moment...</div>
+      <div class="winners-empty">Aucun gain pour le moment...</div>
     </div>
   </div>
 
@@ -995,36 +949,17 @@
     </div>
     
     <div class="gold-container">
-      <!-- File d'attente au-dessus de la ruche -->
-      <div class="queue-overlay" id="queueOverlay">
-        <div class="queue-header">
-          <div class="queue-title">⚡ File d'attente</div>
-          <div class="queue-count" id="queueCount">0</div>
-        </div>
-        <div class="queue-list" id="queueList">
-          <div class="queue-empty">Aucune attaque en attente</div>
-        </div>
-      </div>
-      
-      <div class="pokemon-monster pokemon1" id="pokemon1">
-        <div class="hp-bar">
-          <div class="hp-fill" id="pokemon1HP" style="width: 100%;"></div>
-        </div>
-      </div>
+      <div class="pokemon-monster pokemon1" id="pokemon1"></div>
       
       <div class="gold-bar easy" id="goldBar"></div>
       
-      <div class="pokemon-monster pokemon2" id="pokemon2">
-        <div class="hp-bar">
-          <div class="hp-fill" id="pokemon2HP" style="width: 100%;"></div>
-        </div>
-      </div>
+      <div class="pokemon-monster pokemon2" id="pokemon2"></div>
       
       <div class="hammer" id="hammer">🔨</div>
     </div>
 
     <div class="instructions">
-      <h2>🌹 Casse la Ruche de BattleBox Team Rocket et Gagne la Récompense</h2>
+      <h2>🌹 BAT LE POKEMON ET GAGNE LE CADEAUX</h2>
       <p>Un Coup = Un Point de Vie en Moins</p>
     </div>
 
@@ -1085,6 +1020,16 @@
     </div>
   </div>
 
+  <div class="popup-overlay" id="rosePoolPopup">
+    <div class="popup-content">
+      <h3>🌹 Pool de Roses Gagné ! 🌹</h3>
+      <div style="font-size: 80px; margin: 20px 0;">🌹</div>
+      <p class="popup-reward-text" id="rosePoolPopupText" style="font-size: 2em; color: #ff69b4;"></p>
+      <div class="popup-victory-message">Incroyable ! Tu as gagné le pool de roses !</div>
+      <button class="popup-close-btn" id="closeRosePoolPopupBtn">Continuer</button>
+    </div>
+  </div>
+
   <script>
     // Variables globales
     let maxHP, currentHP, totalHits;
@@ -1097,12 +1042,15 @@
     let audioContext = null;
     let currentDifficulty = "easy";
     
-    let pokemon1HP = 200;
-    let pokemon2HP = 500;
+    // Points de vie des Pokémon selon la difficulté
+    let pokemon1HP, pokemon2HP;
     let totalCoins = 0;
+    
+    // Pool de roses
+    let rosePool = 0;
+    let hitsSinceLastPoolAddition = 0;
 
-    // Variables pour la file d'attente
-    let pokeFinityQueue = [];
+    // Liste des gagnants
     let winnersList = [];
 
     // Liste des images de ruche
@@ -1138,18 +1086,22 @@
     const coinsPopup = document.getElementById("coinsPopup");
     const coinsPopupText = document.getElementById("coinsPopupText");
     const closeCoinsPopupBtn = document.getElementById("closeCoinsPopupBtn");
+    
+    const rosePoolPopup = document.getElementById("rosePoolPopup");
+    const rosePoolPopupText = document.getElementById("rosePoolPopupText");
+    const closeRosePoolPopupBtn = document.getElementById("closeRosePoolPopupBtn");
+    
+    const poolDisplay = document.getElementById("poolDisplay");
+    const poolAmount = document.getElementById("poolAmount");
 
-    // Éléments de file d'attente
-    const queueOverlay = document.getElementById("queueOverlay");
-    const queueList = document.getElementById("queueList");
-    const queueCount = document.getElementById("queueCount");
+    // Éléments du tableau des gagnants
     const winnersListElement = document.getElementById("winnersList");
     const winnersBoard = document.getElementById("winnersBoard");
 
     const impactEffects = ["💥", "🔥", "⭐", "💫", "✨", "💢"];
 
     // =============================================
-    // SYSTÈME DE DRAG & DROP POUR LE TABLEAU ET LA FILE D'ATTENTE
+    // SYSTÈME DE DRAG & DROP POUR LE TABLEAU ET LE POOL
     // =============================================
 
     function makeDraggable(element) {
@@ -1191,210 +1143,11 @@
     // Rendre le tableau des gagnants déplaçable
     makeDraggable(winnersBoard);
 
-    // Rendre la file d'attente déplaçable
-    makeDraggable(queueOverlay);
+    // Rendre l'affichage du pool déplaçable
+    makeDraggable(poolDisplay);
 
     // =============================================
-    // SYSTÈME DE FILE D'ATTENTE
-    // =============================================
-
-    function addAttackToQueue(userName, damage = 1) {
-        // Ajouter à la file d'attente
-        pokeFinityQueue.push({
-            userName,
-            damage,
-            timestamp: Date.now()
-        });
-        
-        updateQueueDisplay();
-        processAttackQueue();
-    }
-
-    function updateQueueDisplay() {
-        queueList.innerHTML = "";
-        
-        if (pokeFinityQueue.length === 0) {
-            queueList.innerHTML = '<div class="queue-empty">Aucune attaque en attente</div>';
-            queueCount.textContent = '0';
-            return;
-        }
-        
-        queueCount.textContent = pokeFinityQueue.length;
-        
-        // Afficher les 3 premières attaques
-        pokeFinityQueue.slice(0, 3).forEach((attack, index) => {
-            const attackElement = document.createElement('div');
-            attackElement.className = 'queue-item';
-            
-            const usernameSpan = document.createElement('span');
-            usernameSpan.className = 'queue-username';
-            usernameSpan.textContent = attack.userName;
-            
-            const damageSpan = document.createElement('span');
-            damageSpan.className = 'queue-damage';
-            damageSpan.textContent = `${attack.damage} coup${attack.damage > 1 ? 's' : ''}`;
-            
-            attackElement.appendChild(usernameSpan);
-            attackElement.appendChild(damageSpan);
-            queueList.appendChild(attackElement);
-        });
-        
-        if (pokeFinityQueue.length > 3) {
-            const moreElement = document.createElement('div');
-            moreElement.className = 'queue-item';
-            moreElement.style.justifyContent = 'center';
-            moreElement.innerHTML = `<span style="color: #ffd700;">+ ${pokeFinityQueue.length - 3} autres...</span>`;
-            queueList.appendChild(moreElement);
-        }
-    }
-
-    async function processAttackQueue() {
-        if (isAttacking || pokeFinityQueue.length === 0) {
-            return;
-        }
-
-        isAttacking = true;
-
-        while (pokeFinityQueue.length > 0) {
-            const attack = pokeFinityQueue.shift();
-            await processSingleAttack(attack);
-            
-            await new Promise(resolve => setTimeout(resolve, 100));
-            updateQueueDisplay();
-        }
-
-        isAttacking = false;
-    }
-
-    async function processSingleAttack(attack) {
-        const { userName, damage } = attack;
-        
-        // Appliquer les dégâts
-        applyDamage(userName, damage);
-    }
-
-    function applyDamage(userName, damage) {
-        // Animation du marteau
-        hammer.classList.add('hitting');
-        playHitSound();
-        updateCombo();
-        
-        // Effets visuels
-        createHitParticles();
-        createImpactEffect();
-        
-        // Appliquer les dégâts
-        for (let i = 0; i < damage && currentHP > 0; i++) {
-            const targets = [];
-            if (currentHP > 0) targets.push('hive');
-            if (pokemon1HP > 0) targets.push('pokemon1');
-            if (pokemon2HP > 0) targets.push('pokemon2');
-            
-            if (targets.length === 0) break;
-            
-            const randomTarget = targets[Math.floor(Math.random() * targets.length)];
-            
-            if (randomTarget === 'hive') {
-                currentHP--;
-                totalHits++;
-                
-                hitsUntilCoin--;
-                if (hitsUntilCoin <= 0) {
-                    rosesEarnedThisGold++;
-                    hitsUntilCoin = 4;
-                }
-            } else if (randomTarget === 'pokemon1') {
-                pokemon1HP--;
-                updatePokemonHP(1, pokemon1HP);
-                if (pokemon1HP <= 0) {
-                    const coinsEarned = getRandomCoins(30, 150);
-                    totalCoins += coinsEarned;
-                    showCoinsEarned(document.getElementById('pokemon1'), coinsEarned);
-                    addWinner(userName, `${coinsEarned} pièces`);
-                    setTimeout(() => showCoinsPopup(coinsEarned), 500);
-                }
-            } else if (randomTarget === 'pokemon2') {
-                pokemon2HP--;
-                updatePokemonHP(2, pokemon2HP);
-                if (pokemon2HP <= 0) {
-                    const coinsEarned = getRandomCoins(30, 150);
-                    totalCoins += coinsEarned;
-                    showCoinsEarned(document.getElementById('pokemon2'), coinsEarned);
-                    addWinner(userName, `${coinsEarned} pièces`);
-                    setTimeout(() => showCoinsPopup(coinsEarned), 500);
-                }
-            }
-        }
-
-        // Animation de la ruche
-        goldBar.classList.add('hit');
-        gameContainer.classList.add('screen-shake');
-        
-        updateUI();
-        
-        // Fin des animations
-        setTimeout(() => {
-            goldBar.classList.remove('hit');
-            gameContainer.classList.remove('screen-shake');
-            hammer.classList.remove('hitting');
-            
-            if (currentHP <= 0) {
-                endGame();
-                addWinner(userName, "RUCHÉ CASSÉE!", true);
-            }
-        }, 500);
-    }
-
-    function addWinner(username, prize, isHive = false) {
-        const winner = {
-            username,
-            prize,
-            isHive,
-            timestamp: new Date().toLocaleTimeString()
-        };
-        
-        winnersList.unshift(winner);
-        
-        // Garder seulement les 10 derniers gagnants
-        if (winnersList.length > 10) {
-            winnersList.pop();
-        }
-        
-        updateWinnersDisplay();
-    }
-
-    function updateWinnersDisplay() {
-        winnersListElement.innerHTML = "";
-        
-        if (winnersList.length === 0) {
-            winnersListElement.innerHTML = '<div class="winners-empty">Aucun dresseur pour le moment...</div>';
-            return;
-        }
-        
-        winnersList.forEach(winner => {
-            const winnerElement = document.createElement("div");
-            winnerElement.className = "winner-item";
-            
-            const usernameSpan = document.createElement("span");
-            usernameSpan.className = "winner-username";
-            usernameSpan.textContent = winner.username;
-            
-            const prizeSpan = document.createElement("span");
-            prizeSpan.className = "winner-prize";
-            prizeSpan.textContent = winner.prize;
-            
-            winnerElement.appendChild(usernameSpan);
-            winnerElement.appendChild(prizeSpan);
-            winnersListElement.appendChild(winnerElement);
-        });
-    }
-
-    function showNotification(message) {
-        console.log(`📢 ${message}`);
-    }
-
-    // =============================================
-    // FONCTIONS DU JEU EXISTANTES
+    // FONCTIONS DU JEU
     // =============================================
 
     function initAudioContext() {
@@ -1555,21 +1308,6 @@
       }
     }
 
-    function updatePokemonHP(pokemonNum, hp) {
-      const hpFill = document.getElementById(`pokemon${pokemonNum}HP`);
-      let maxHP;
-      
-      if (pokemonNum === 1) maxHP = 200;
-      else if (pokemonNum === 2) maxHP = 500;
-      
-      const percentage = (hp / maxHP) * 100;
-      hpFill.style.width = percentage + '%';
-      
-      if (percentage <= 0) {
-        document.getElementById(`pokemon${pokemonNum}`).classList.add('defeated');
-      }
-    }
-
     function showCoinsPopup(coins) {
       coinsPopupText.textContent = `+${coins} Pièces !`;
       coinsPopup.style.display = 'flex';
@@ -1586,11 +1324,21 @@
     }
 
     function spawnPokemons() {
-      pokemon1HP = 200;
-      pokemon2HP = 500;
-      
-      updatePokemonHP(1, pokemon1HP);
-      updatePokemonHP(2, pokemon2HP);
+      // Points de vie des Pokémon selon la difficulté
+      switch(currentDifficulty) {
+        case "easy":
+          pokemon1HP = 200;
+          pokemon2HP = 500;
+          break;
+        case "hard":
+          pokemon1HP = 400;
+          pokemon2HP = 1000;
+          break;
+        case "extreme":
+          pokemon1HP = 800;
+          pokemon2HP = 2000;
+          break;
+      }
       
       document.getElementById('pokemon1').classList.remove('defeated');
       document.getElementById('pokemon2').classList.remove('defeated');
@@ -1628,7 +1376,7 @@
     }
 
     function attack() {
-      if (currentHP <= 0 || isAttacking) return;
+      if ((currentHP <= 0 && pokemon1HP <= 0 && pokemon2HP <= 0) || isAttacking) return;
       
       isAttacking = true;
       
@@ -1660,7 +1408,7 @@
         animationDuration = 100;
       }
       
-      for (let i = 0; i < hits && currentHP > 0; i++) {
+      for (let i = 0; i < hits && (currentHP > 0 || pokemon1HP > 0 || pokemon2HP > 0); i++) {
         const targets = [];
         
         if (currentHP > 0) targets.push('hive');
@@ -1687,25 +1435,42 @@
             rosesEarned++;
             hitsUntilCoin = 4;
           }
+          
+          // Gestion du pool de roses
+          hitsSinceLastPoolAddition++;
+          if (hitsSinceLastPoolAddition >= 100) {
+            rosePool += 5;
+            hitsSinceLastPoolAddition = 0;
+            updatePoolDisplay();
+          }
+          
+          // Chance de gagner le pool de roses
+          if (rosePool > 0 && Math.random() < 0.002) { // 1/500 chance
+            const poolPercentage = Math.floor(Math.random() * 41) + 10; // 10-50%
+            const rosesWon = Math.floor(rosePool * (poolPercentage / 100));
+            rosePool -= rosesWon;
+            showRosePoolPopup("Dresseur", rosesWon, poolPercentage);
+            updatePoolDisplay();
+          }
         } else if (randomTarget === 'pokemon1') {
           pokemon1HP--;
-          updatePokemonHP(1, pokemon1HP);
           if (pokemon1HP <= 0) {
             const coinsEarned = getRandomCoins(30, 150);
             totalCoins += coinsEarned;
             showCoinsEarned(document.getElementById('pokemon1'), coinsEarned);
             addWinner("Dresseur", `${coinsEarned} pièces`);
             setTimeout(() => showCoinsPopup(coinsEarned), 500);
+            document.getElementById('pokemon1').classList.add('defeated');
           }
         } else if (randomTarget === 'pokemon2') {
           pokemon2HP--;
-          updatePokemonHP(2, pokemon2HP);
           if (pokemon2HP <= 0) {
             const coinsEarned = getRandomCoins(30, 150);
             totalCoins += coinsEarned;
             showCoinsEarned(document.getElementById('pokemon2'), coinsEarned);
             addWinner("Dresseur", `${coinsEarned} pièces`);
             setTimeout(() => showCoinsPopup(coinsEarned), 500);
+            document.getElementById('pokemon2').classList.add('defeated');
           }
         }
       }
@@ -1861,16 +1626,87 @@
       initGame();
     }
 
+    function addWinner(username, prize, isHive = false) {
+      const winner = {
+          username,
+          prize,
+          isHive,
+          timestamp: new Date().toLocaleTimeString()
+      };
+      
+      winnersList.unshift(winner);
+      
+      // Garder seulement les 10 derniers gagnants
+      if (winnersList.length > 10) {
+          winnersList.pop();
+      }
+      
+      updateWinnersDisplay();
+    }
+
+    function updateWinnersDisplay() {
+      winnersListElement.innerHTML = "";
+      
+      if (winnersList.length === 0) {
+          winnersListElement.innerHTML = '<div class="winners-empty">Aucun gain pour le moment...</div>';
+          return;
+      }
+      
+      winnersList.forEach(winner => {
+          const winnerElement = document.createElement("div");
+          winnerElement.className = "winner-item";
+          
+          const usernameSpan = document.createElement("span");
+          usernameSpan.className = "winner-username";
+          usernameSpan.textContent = winner.username;
+          
+          const prizeSpan = document.createElement("span");
+          prizeSpan.className = "winner-prize";
+          prizeSpan.textContent = winner.prize;
+          
+          winnerElement.appendChild(usernameSpan);
+          winnerElement.appendChild(prizeSpan);
+          winnersListElement.appendChild(winnerElement);
+      });
+    }
+
+    function updatePoolDisplay() {
+      poolAmount.textContent = rosePool;
+    }
+
+    function showRosePoolPopup(userName, rosesWon, percentage) {
+      rosePoolPopupText.textContent = `${rosesWon} roses (${percentage}% du pool)`;
+      rosePoolPopup.style.display = 'flex';
+      setTimeout(() => {
+          rosePoolPopup.classList.add('active');
+      }, 10);
+      
+      addWinner(userName, `${rosesWon} roses`);
+    }
+
+    function closeRosePoolPopupFunc() {
+      rosePoolPopup.classList.remove('active');
+      setTimeout(() => {
+          rosePoolPopup.style.display = 'none';
+      }, 300);
+    }
+
     function initGame() {
       switch(currentDifficulty) {
         case "easy":
           maxHP = 5000;
+          pokemon1HP = 200;
+          pokemon2HP = 500;
           break;
         case "hard":
           maxHP = 10000;
+          pokemon1HP = 400;
+          pokemon2HP = 1000;
           break;
         case "extreme":
           maxHP = 50000;
+          pokemon1HP = 800;
+          pokemon2HP = 2000;
           break;
       }
 
@@ -1882,15 +1718,9 @@
       lastHitTime = 0;
       isAttacking = false;
       
-      pokemon1HP = 200;
-      pokemon2HP = 500;
-      
-      // Réinitialiser les files d'attente
-      pokeFinityQueue = [];
-      winnersList = [];
-      
-      updatePokemonHP(1, pokemon1HP);
-      updatePokemonHP(2, pokemon2HP);
+      // Réinitialiser le pool de roses
+      rosePool = 0;
+      hitsSinceLastPoolAddition = 0;
       
       document.getElementById('pokemon1').classList.remove('defeated');
       document.getElementById('pokemon2').classList.remove('defeated');
@@ -1902,11 +1732,12 @@
       
       closeVictoryPopup();
       closeCoinsPopupFunc();
+      closeRosePoolPopupFunc();
       comboIndicator.style.display = "none";
       
       // Mettre à jour les affichages
-      updateQueueDisplay();
       updateWinnersDisplay();
+      updatePoolDisplay();
     }
 
     // =============================================
@@ -1933,6 +1764,7 @@
 
     closePopupBtn.addEventListener('click', closeVictoryPopup);
     closeCoinsPopupBtn.addEventListener('click', closeCoinsPopupFunc);
+    closeRosePoolPopupBtn.addEventListener('click', closeRosePoolPopupFunc);
 
     victoryPopup.addEventListener('click', function(e) {
       if (e.target === this) {
@@ -1943,6 +1775,12 @@
     coinsPopup.addEventListener('click', function(e) {
       if (e.target === this) {
         closeCoinsPopupFunc();
+      }
+    });
+    
+    rosePoolPopup.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeRosePoolPopupFunc();
       }
     });
 
