@@ -1041,7 +1041,7 @@
 
   <div class="popup-overlay" id="coinsPopup">
     <div class="popup-content">
-      <h3>💰 Pokémon Vaincu ! 💰</h3>
+      <h3>💰 Pokeball Cassée ! 💰</h3>
       <div style="font-size: 80px; margin: 20px 0;">💥</div>
       <p class="popup-reward-text" id="coinsPopupText" style="font-size: 2em; color: #ffd700;"></p>
       <div class="popup-victory-message">Félicitations ! Continue de casser la ruche !</div>
@@ -1494,6 +1494,7 @@
             addWinner("Dresseur", `${coinsEarned} pièces`);
             setTimeout(() => showCoinsPopup(coinsEarned), 500);
             document.getElementById('pokemon1').classList.add('defeated');
+            message.textContent = "💥 Pokeball cassée !";
           }
         } else if (randomTarget === 'pokemon2') {
           pokemon2HP--;
@@ -1504,6 +1505,7 @@
             addWinner("Dresseur", `${coinsEarned} pièces`);
             setTimeout(() => showCoinsPopup(coinsEarned), 500);
             document.getElementById('pokemon2').classList.add('defeated');
+            message.textContent = "💥 Pokeball cassée !";
           }
         }
       }
