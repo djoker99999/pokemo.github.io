@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JEREM BATLEBOX</title>
+  <title>JEREM BATTLEBOX</title>
   <style>
     * {
       margin: 0;
@@ -226,7 +226,7 @@
     }
 
     .hp-bar {
-      display: none; /* Barres de vie cachées */
+      display: none;
     }
 
     .coins-earned {
@@ -575,7 +575,7 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.7);
-      display: flex;
+      display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -730,7 +730,6 @@
       background: linear-gradient(45deg, #FF9800, #FF5722);
     }
 
-    /* Styles pour le tableau des gagnants déplaçable */
     .winners-board {
       position: fixed;
       top: 100px;
@@ -800,7 +799,6 @@
       font-size: 0.9em;
     }
 
-    /* Styles pour l'affichage du pool de roses */
     .pool-display {
       position: fixed;
       top: 100px;
@@ -840,7 +838,6 @@
       margin-top: 5px;
     }
 
-    /* Styles pour les boutons de sauvegarde */
     .save-controls {
       display: flex;
       justify-content: center;
@@ -864,15 +861,6 @@
       background: linear-gradient(45deg, #03A9F4, #00BCD4);
     }
 
-    #saveBtn {
-      background: linear-gradient(45deg, #FF9800, #FF5722);
-    }
-
-    #saveBtn:hover {
-      background: linear-gradient(45deg, #FF5722, #FF7043);
-    }
-
-    /* Styles pour l'indicateur de sauvegarde automatique */
     .save-indicator {
       position: fixed;
       bottom: 10px;
@@ -980,17 +968,14 @@
   </style>
 </head>
 <body>
-  <!-- Indicateur de sauvegarde automatique -->
   <div class="save-indicator" id="saveIndicator">Sauvegarde automatique...</div>
 
-  <!-- Affichage du pool de roses -->
   <div class="pool-display" id="poolDisplay">
     <h3>🌹 Pool de Roses</h3>
     <div class="pool-amount" id="poolAmount">0</div>
     <div class="pool-chance">Chance de drop: 1/500</div>
   </div>
 
-  <!-- Tableau des gagnants déplaçable -->
   <div class="winners-board" id="winnersBoard">
     <h3>🏆 Historique des Gains</h3>
     <div class="winners-list" id="winnersList">
@@ -1069,7 +1054,6 @@
     </div>
 
     <div class="save-controls">
-      <button id="saveBtn">Sauvegarder</button>
       <button id="exportBtn">Exporter Sauvegarde</button>
       <button id="importBtn">Importer Sauvegarde</button>
     </div>
@@ -1119,8 +1103,9 @@
     let audioContext = null;
     let currentDifficulty = "easy";
     
-    // Points de vie des Pokémon selon la difficulté
+    // Points de vie des Pokémon
     let pokemon1HP, pokemon2HP;
+    let pokemon1MaxHP, pokemon2MaxHP;
     let totalCoins = 0;
     
     // Pool de roses
@@ -1144,7 +1129,6 @@
     let autoSaveInterval;
     let lastSaveTime = 0;
 
-    // Fonction pour générer un nombre aléatoire entre min et max
     function getRandomCoins(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -1175,20 +1159,13 @@
     const poolDisplay = document.getElementById("poolDisplay");
     const poolAmount = document.getElementById("poolAmount");
 
-    // Éléments du tableau des gagnants
     const winnersListElement = document.getElementById("winnersList");
     const winnersBoard = document.getElementById("winnersBoard");
 
-    // Boutons de sauvegarde
-    const saveBtn = document.getElementById("saveBtn");
     const exportBtn = document.getElementById("exportBtn");
     const importBtn = document.getElementById("importBtn");
 
     const impactEffects = ["💥", "🔥", "⭐", "💫", "✨", "💢"];
-
-    // =============================================
-    // SYSTÈME DE DRAG & DROP POUR LE TABLEAU ET LE POOL
-    // =============================================
 
     function makeDraggable(element) {
       let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -1198,43 +1175,31 @@
       function dragMouseDown(e) {
         e = e || window.event;
         e.preventDefault();
-        // get the mouse cursor position at startup:
         pos3 = e.clientX;
         pos4 = e.clientY;
         document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
       }
       
       function elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
-        // calculate the new cursor position:
         pos1 = pos3 - e.clientX;
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        // set the element's new position:
         element.style.top = (element.offsetTop - pos2) + "px";
         element.style.left = (element.offsetLeft - pos1) + "px";
       }
       
       function closeDragElement() {
-        // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
       }
     }
 
-    // Rendre le tableau des gagnants déplaçable
     makeDraggable(winnersBoard);
-
-    // Rendre l'affichage du pool déplaçable
     makeDraggable(poolDisplay);
-
-    // =============================================
-    // FONCTIONS DU JEU
-    // =============================================
 
     function initAudioContext() {
       try {
@@ -1410,25 +1375,27 @@
     }
 
     function spawnPokemons() {
-      // Points de vie des Pokémon selon la difficulté
       switch(currentDifficulty) {
         case "easy":
-          pokemon1HP = 200;
-          pokemon2HP = 500;
+          pokemon1MaxHP = 200;
+          pokemon2MaxHP = 500;
           break;
         case "hard":
-          pokemon1HP = 400;
-          pokemon2HP = 1000;
+          pokemon1MaxHP = 400;
+          pokemon2MaxHP = 1000;
           break;
         case "extreme":
-          pokemon1HP = 800;
-          pokemon2HP = 2000;
+          pokemon1MaxHP = 800;
+          pokemon2MaxHP = 2000;
           break;
         case "legendary":
-          pokemon1HP = 1600;
-          pokemon2HP = 4000;
+          pokemon1MaxHP = 1600;
+          pokemon2MaxHP = 4000;
           break;
       }
+      
+      pokemon1HP = pokemon1MaxHP;
+      pokemon2HP = pokemon2MaxHP;
       
       document.getElementById('pokemon1').classList.remove('defeated');
       document.getElementById('pokemon2').classList.remove('defeated');
@@ -1442,7 +1409,6 @@
         message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
       }, 2000);
       
-      // Sauvegarde automatique après cette action
       autoSave();
     }
 
@@ -1458,7 +1424,6 @@
         message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
       }, 2000);
       
-      // Sauvegarde automatique après cette action
       autoSave();
     }
 
@@ -1479,7 +1444,6 @@
       isAttacking = true;
       
       let hits = attackMode;
-      let actualHits = 0;
       let rosesEarned = 0;
       let wasCracked = goldBar.classList.contains('cracked');
       
@@ -1518,7 +1482,6 @@
         const randomTarget = targets[Math.floor(Math.random() * targets.length)];
         
         if (randomTarget === 'hive') {
-          actualHits++;
           totalHits++;
           currentHP--;
           
@@ -1534,7 +1497,6 @@
             hitsUntilCoin = 4;
           }
           
-          // Gestion du pool de roses
           hitsSinceLastPoolAddition++;
           if (hitsSinceLastPoolAddition >= 100) {
             rosePool += 5;
@@ -1542,9 +1504,8 @@
             updatePoolDisplay();
           }
           
-          // Chance de gagner le pool de roses
-          if (rosePool > 0 && Math.random() < 0.002) { // 1/500 chance
-            const poolPercentage = Math.floor(Math.random() * 41) + 10; // 10-50%
+          if (rosePool > 0 && Math.random() < 0.002) {
+            const poolPercentage = Math.floor(Math.random() * 41) + 10;
             const rosesWon = Math.floor(rosePool * (poolPercentage / 100));
             rosePool -= rosesWon;
             showRosePoolPopup("Dresseur", rosesWon, poolPercentage);
@@ -1607,7 +1568,6 @@
           addWinner("Dresseur", "POKÉMON VAINCU!", true);
         }
         
-        // Sauvegarde automatique après l'attaque
         autoSave();
       }, animationDuration);
     }
@@ -1624,15 +1584,20 @@
     }
 
     function updateUI() {
+      // Retirer toutes les classes d'animation précédentes
+      goldBar.classList.remove('hit', 'heavy-hit', 'critical-hit');
+      
       if (currentHP === 0) {
         goldBar.className = "gold-bar broken " + currentDifficulty;
         message.textContent = "💥 Le Pokémon est vaincu !";
       } else {
+        // Conserver la classe de difficulté
+        goldBar.className = "gold-bar " + currentDifficulty;
+        
         if (maxHP - currentHP >= maxHP * 0.7) {
           goldBar.classList.add("cracked");
           message.textContent = "⚠️ Le Pokémon commence à faiblir...";
         } else {
-          goldBar.classList.remove("cracked");
           let difficultyName = currentDifficulty === "easy" ? "facile" : 
                                currentDifficulty === "hard" ? "difficile" : 
                                currentDifficulty === "extreme" ? "extrême" : "légendaire";
@@ -1691,7 +1656,6 @@
         victoryPopup.classList.add('active');
       }, 10);
       
-      // Sauvegarde automatique après la victoire
       autoSave();
     }
 
@@ -1725,7 +1689,6 @@
       const btnEl = document.getElementById(`mode${mode}`);
       if (btnEl) btnEl.classList.add('active');
       
-      // Sauvegarde automatique après changement de mode
       autoSave();
     }
 
@@ -1741,7 +1704,6 @@
       
       initGame();
       
-      // Sauvegarde automatique après changement de difficulté
       autoSave();
     }
 
@@ -1755,14 +1717,12 @@
       
       winnersList.unshift(winner);
       
-      // Garder seulement les 10 derniers gagnants
       if (winnersList.length > 10) {
           winnersList.pop();
       }
       
       updateWinnersDisplay();
       
-      // Sauvegarde automatique après ajout d'un gagnant
       autoSave();
     }
 
@@ -1813,50 +1773,9 @@
       }, 300);
     }
 
-    // =============================================
-    // SYSTÈME DE SAUVEGARDE AMÉLIORÉ
-    // =============================================
-
-    function saveGame() {
-      const saveData = {
-        currentDifficulty,
-        maxHP,
-        currentHP,
-        pokemon1HP,
-        pokemon2HP,
-        totalCoins,
-        rosePool,
-        hitsSinceLastPoolAddition,
-        totalHits,
-        hitsUntilCoin,
-        rosesEarnedThisGold,
-        currentHiveIndex,
-        winnersList,
-        attackMode,
-        timestamp: new Date().toISOString()
-      };
-      
-      try {
-        localStorage.setItem('jeremBattleboxSave', JSON.stringify(saveData));
-        
-        // Afficher l'indicateur de sauvegarde
-        saveIndicator.textContent = "✅ Jeu sauvegardé !";
-        saveIndicator.classList.add('show');
-        setTimeout(() => {
-          saveIndicator.classList.remove('show');
-        }, 2000);
-        
-        message.textContent = "✅ Jeu sauvegardé avec succès !";
-      } catch (e) {
-        console.error("Erreur lors de la sauvegarde:", e);
-        message.textContent = "❌ Erreur lors de la sauvegarde";
-      }
-    }
-
     function autoSave() {
-      // Éviter de sauvegarder trop fréquemment
       const now = Date.now();
-      if (now - lastSaveTime < 5000) { // 5 secondes minimum entre les sauvegardes
+      if (now - lastSaveTime < 5000) {
         return;
       }
       
@@ -1868,6 +1787,8 @@
         currentHP,
         pokemon1HP,
         pokemon2HP,
+        pokemon1MaxHP,
+        pokemon2MaxHP,
         totalCoins,
         rosePool,
         hitsSinceLastPoolAddition,
@@ -1883,8 +1804,6 @@
       try {
         localStorage.setItem('jeremBattleboxSave', JSON.stringify(saveData));
         
-        // Afficher l'indicateur de sauvegarde
-        saveIndicator.textContent = "Sauvegarde automatique...";
         saveIndicator.classList.add('show');
         setTimeout(() => {
           saveIndicator.classList.remove('show');
@@ -1900,17 +1819,14 @@
         if (savedData) {
           const saveData = JSON.parse(savedData);
           
-          // Valider les données de sauvegarde
-          if (!saveData.currentDifficulty || !saveData.maxHP || saveData.currentHP === undefined) {
-            throw new Error("Format de sauvegarde invalide");
-          }
-          
-          // Appliquer les données de sauvegarde
-          currentDifficulty = saveData.currentDifficulty;
+          // Restaurer toutes les données
+          currentDifficulty = saveData.currentDifficulty || 'easy';
           maxHP = saveData.maxHP;
           currentHP = saveData.currentHP;
-          pokemon1HP = saveData.pokemon1HP || 200;
-          pokemon2HP = saveData.pokemon2HP || 500;
+          pokemon1HP = saveData.pokemon1HP;
+          pokemon2HP = saveData.pokemon2HP;
+          pokemon1MaxHP = saveData.pokemon1MaxHP || 200;
+          pokemon2MaxHP = saveData.pokemon2MaxHP || 500;
           totalCoins = saveData.totalCoins || 0;
           rosePool = saveData.rosePool || 0;
           hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
@@ -1922,9 +1838,15 @@
           attackMode = saveData.attackMode || 1;
           
           // Mettre à jour l'interface
-          setDifficulty(currentDifficulty);
-          setAttackMode(attackMode);
+          document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          document.querySelector(`.difficulty-btn.${currentDifficulty}`).classList.add('active');
+          
           goldBar.style.backgroundImage = `url('${hiveImages[currentHiveIndex]}')`;
+          
+          // Mettre à jour le mode d'attaque
+          setAttackMode(attackMode);
           
           // Mettre à jour l'état des Pokémon
           if (pokemon1HP <= 0) {
@@ -1946,21 +1868,23 @@
           
           message.textContent = "✅ Sauvegarde automatique chargée !";
           
-          // Afficher l'indicateur de sauvegarde
           saveIndicator.textContent = "Sauvegarde automatique chargée !";
           saveIndicator.classList.add('show');
           setTimeout(() => {
             saveIndicator.classList.remove('show');
           }, 2000);
+          
+          return true; // Indiquer que la sauvegarde a été chargée
         }
+        return false; // Pas de sauvegarde trouvée
       } catch (error) {
         console.error("Erreur lors du chargement de la sauvegarde automatique:", error);
         message.textContent = "❌ Erreur lors du chargement de la sauvegarde automatique";
+        return false;
       }
     }
 
     function startAutoSaveInterval() {
-      // Sauvegarde automatique toutes les 30 secondes
       autoSaveInterval = setInterval(() => {
         autoSave();
       }, 30000); // 30 secondes
@@ -1973,6 +1897,8 @@
         currentHP,
         pokemon1HP,
         pokemon2HP,
+        pokemon1MaxHP,
+        pokemon2MaxHP,
         totalCoins,
         rosePool,
         hitsSinceLastPoolAddition,
@@ -2014,17 +1940,14 @@
           try {
             const saveData = JSON.parse(event.target.result);
             
-            // Valider les données de sauvegarde
-            if (!saveData.currentDifficulty || !saveData.maxHP || saveData.currentHP === undefined) {
-              throw new Error("Format de sauvegarde invalide");
-            }
-            
-            // Appliquer les données de sauvegarde
-            currentDifficulty = saveData.currentDifficulty;
+            // Restaurer toutes les données
+            currentDifficulty = saveData.currentDifficulty || 'easy';
             maxHP = saveData.maxHP;
             currentHP = saveData.currentHP;
-            pokemon1HP = saveData.pokemon1HP || 200;
-            pokemon2HP = saveData.pokemon2HP || 500;
+            pokemon1HP = saveData.pokemon1HP;
+            pokemon2HP = saveData.pokemon2HP;
+            pokemon1MaxHP = saveData.pokemon1MaxHP || 200;
+            pokemon2MaxHP = saveData.pokemon2MaxHP || 500;
             totalCoins = saveData.totalCoins || 0;
             rosePool = saveData.rosePool || 0;
             hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
@@ -2036,11 +1959,15 @@
             attackMode = saveData.attackMode || 1;
             
             // Mettre à jour l'interface
-            setDifficulty(currentDifficulty);
-            setAttackMode(attackMode);
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+              btn.classList.remove('active');
+            });
+            document.querySelector(`.difficulty-btn.${currentDifficulty}`).classList.add('active');
+            
             goldBar.style.backgroundImage = `url('${hiveImages[currentHiveIndex]}')`;
             
-            // Mettre à jour l'état des Pokémon
+            setAttackMode(attackMode);
+            
             if (pokemon1HP <= 0) {
               document.getElementById('pokemon1').classList.add('defeated');
             } else {
@@ -2053,14 +1980,12 @@
               document.getElementById('pokemon2').classList.remove('defeated');
             }
             
-            // Mettre à jour les affichages
             updateUI();
             updateWinnersDisplay();
             updatePoolDisplay();
             
             message.textContent = "✅ Sauvegarde importée avec succès !";
             
-            // Sauvegarder automatiquement après importation
             autoSave();
           } catch (error) {
             message.textContent = "❌ Erreur lors de l'importation de la sauvegarde";
@@ -2076,27 +2001,29 @@
       switch(currentDifficulty) {
         case "easy":
           maxHP = 5000;
-          pokemon1HP = 200;
-          pokemon2HP = 500;
+          pokemon1MaxHP = 200;
+          pokemon2MaxHP = 500;
           break;
         case "hard":
           maxHP = 10000;
-          pokemon1HP = 400;
-          pokemon2HP = 1000;
+          pokemon1MaxHP = 400;
+          pokemon2MaxHP = 1000;
           break;
         case "extreme":
           maxHP = 50000;
-          pokemon1HP = 800;
-          pokemon2HP = 2000;
+          pokemon1MaxHP = 800;
+          pokemon2MaxHP = 2000;
           break;
         case "legendary":
           maxHP = 50000;
-          pokemon1HP = 1600;
-          pokemon2HP = 4000;
+          pokemon1MaxHP = 1600;
+          pokemon2MaxHP = 4000;
           break;
       }
 
       currentHP = maxHP;
+      pokemon1HP = pokemon1MaxHP;
+      pokemon2HP = pokemon2MaxHP;
       totalHits = 0;
       hitsUntilCoin = 4;
       rosesEarnedThisGold = 0;
@@ -2104,7 +2031,6 @@
       lastHitTime = 0;
       isAttacking = false;
       
-      // Réinitialiser le pool de roses
       rosePool = 0;
       hitsSinceLastPoolAddition = 0;
       
@@ -2122,25 +2048,18 @@
       closeRosePoolPopupFunc();
       comboIndicator.style.display = "none";
       
-      // Mettre à jour les affichages
       updateWinnersDisplay();
       updatePoolDisplay();
       
-      // Sauvegarde automatique après initialisation
       autoSave();
     }
 
-    // =============================================
-    // INITIALISATION
-    // =============================================
-
+    // Event listeners
     document.getElementById("attackBtn").addEventListener("click", attack);
     document.getElementById("resetBtn").addEventListener("click", initGame);
     document.getElementById("spawnPokemonsBtn").addEventListener("click", spawnPokemons);
     document.getElementById("changeHiveBtn").addEventListener("click", changeHiveImage);
 
-    // Boutons de sauvegarde
-    saveBtn.addEventListener("click", saveGame);
     exportBtn.addEventListener("click", exportSaveData);
     importBtn.addEventListener("click", importSaveData);
 
@@ -2234,10 +2153,6 @@
         case 'L':
           setDifficulty('legendary');
           break;
-        case 's':
-        case 'S':
-          saveGame();
-          break;
         case 'Escape':
           closeVictoryPopup();
           break;
@@ -2252,9 +2167,13 @@
       }
     }, 1000);
 
-    // Initialiser le jeu
-    loadAutoSave(); // Charger la sauvegarde automatique au démarrage
-    startAutoSaveInterval(); // Démarrer l'intervalle de sauvegarde automatique
+    // Initialisation
+    const saveLoaded = loadAutoSave();
+    if (!saveLoaded) {
+      // Si aucune sauvegarde n'a été chargée, initialiser le jeu normalement
+      initGame();
+    }
+    startAutoSaveInterval();
   </script>
 </body>
 </html>
