@@ -864,6 +864,14 @@
       background: linear-gradient(45deg, #03A9F4, #00BCD4);
     }
 
+    #saveBtn {
+      background: linear-gradient(45deg, #FF9800, #FF5722);
+    }
+
+    #saveBtn:hover {
+      background: linear-gradient(45deg, #FF5722, #FF7043);
+    }
+
     /* Styles pour l'indicateur de sauvegarde automatique */
     .save-indicator {
       position: fixed;
@@ -1061,6 +1069,7 @@
     </div>
 
     <div class="save-controls">
+      <button id="saveBtn">Sauvegarder</button>
       <button id="exportBtn">Exporter Sauvegarde</button>
       <button id="importBtn">Importer Sauvegarde</button>
     </div>
@@ -1171,6 +1180,7 @@
     const winnersBoard = document.getElementById("winnersBoard");
 
     // Boutons de sauvegarde
+    const saveBtn = document.getElementById("saveBtn");
     const exportBtn = document.getElementById("exportBtn");
     const importBtn = document.getElementById("importBtn");
 
@@ -1804,8 +1814,44 @@
     }
 
     // =============================================
-    // SYSTÈME DE SAUVEGARDE AUTOMATIQUE
+    // SYSTÈME DE SAUVEGARDE AMÉLIORÉ
     // =============================================
+
+    function saveGame() {
+      const saveData = {
+        currentDifficulty,
+        maxHP,
+        currentHP,
+        pokemon1HP,
+        pokemon2HP,
+        totalCoins,
+        rosePool,
+        hitsSinceLastPoolAddition,
+        totalHits,
+        hitsUntilCoin,
+        rosesEarnedThisGold,
+        currentHiveIndex,
+        winnersList,
+        attackMode,
+        timestamp: new Date().toISOString()
+      };
+      
+      try {
+        localStorage.setItem('jeremBattleboxSave', JSON.stringify(saveData));
+        
+        // Afficher l'indicateur de sauvegarde
+        saveIndicator.textContent = "✅ Jeu sauvegardé !";
+        saveIndicator.classList.add('show');
+        setTimeout(() => {
+          saveIndicator.classList.remove('show');
+        }, 2000);
+        
+        message.textContent = "✅ Jeu sauvegardé avec succès !";
+      } catch (e) {
+        console.error("Erreur lors de la sauvegarde:", e);
+        message.textContent = "❌ Erreur lors de la sauvegarde";
+      }
+    }
 
     function autoSave() {
       // Éviter de sauvegarder trop fréquemment
@@ -1830,6 +1876,7 @@
         rosesEarnedThisGold,
         currentHiveIndex,
         winnersList,
+        attackMode,
         timestamp: new Date().toISOString()
       };
       
@@ -1837,6 +1884,7 @@
         localStorage.setItem('jeremBattleboxSave', JSON.stringify(saveData));
         
         // Afficher l'indicateur de sauvegarde
+        saveIndicator.textContent = "Sauvegarde automatique...";
         saveIndicator.classList.add('show');
         setTimeout(() => {
           saveIndicator.classList.remove('show');
@@ -1853,7 +1901,7 @@
           const saveData = JSON.parse(savedData);
           
           // Valider les données de sauvegarde
-          if (!saveData.currentDifficulty || !saveData.maxHP || !saveData.currentHP) {
+          if (!saveData.currentDifficulty || !saveData.maxHP || saveData.currentHP === undefined) {
             throw new Error("Format de sauvegarde invalide");
           }
           
@@ -1871,9 +1919,11 @@
           rosesEarnedThisGold = saveData.rosesEarnedThisGold || 0;
           currentHiveIndex = saveData.currentHiveIndex || 0;
           winnersList = saveData.winnersList || [];
+          attackMode = saveData.attackMode || 1;
           
           // Mettre à jour l'interface
           setDifficulty(currentDifficulty);
+          setAttackMode(attackMode);
           goldBar.style.backgroundImage = `url('${hiveImages[currentHiveIndex]}')`;
           
           // Mettre à jour l'état des Pokémon
@@ -1931,6 +1981,7 @@
         rosesEarnedThisGold,
         currentHiveIndex,
         winnersList,
+        attackMode,
         timestamp: new Date().toISOString()
       };
       
@@ -1964,7 +2015,7 @@
             const saveData = JSON.parse(event.target.result);
             
             // Valider les données de sauvegarde
-            if (!saveData.currentDifficulty || !saveData.maxHP || !saveData.currentHP) {
+            if (!saveData.currentDifficulty || !saveData.maxHP || saveData.currentHP === undefined) {
               throw new Error("Format de sauvegarde invalide");
             }
             
@@ -1982,9 +2033,11 @@
             rosesEarnedThisGold = saveData.rosesEarnedThisGold || 0;
             currentHiveIndex = saveData.currentHiveIndex || 0;
             winnersList = saveData.winnersList || [];
+            attackMode = saveData.attackMode || 1;
             
             // Mettre à jour l'interface
             setDifficulty(currentDifficulty);
+            setAttackMode(attackMode);
             goldBar.style.backgroundImage = `url('${hiveImages[currentHiveIndex]}')`;
             
             // Mettre à jour l'état des Pokémon
@@ -2087,6 +2140,7 @@
     document.getElementById("changeHiveBtn").addEventListener("click", changeHiveImage);
 
     // Boutons de sauvegarde
+    saveBtn.addEventListener("click", saveGame);
     exportBtn.addEventListener("click", exportSaveData);
     importBtn.addEventListener("click", importSaveData);
 
@@ -2179,6 +2233,10 @@
         case 'l':
         case 'L':
           setDifficulty('legendary');
+          break;
+        case 's':
+        case 'S':
+          saveGame();
           break;
         case 'Escape':
           closeVictoryPopup();
