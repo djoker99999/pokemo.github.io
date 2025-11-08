@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JEREM le DRESSEUR</title>
+  <title>JEREM BATLEBOX</title>
   <style>
     * {
       margin: 0;
@@ -289,6 +289,11 @@
       animation: purpleGlow 2s ease-in-out infinite alternate;
     }
 
+    .gold-bar.legendary {
+      filter: drop-shadow(0 0 35px rgba(255, 165, 0, 0.9)) brightness(1.3) hue-rotate(180deg);
+      animation: legendaryGlow 2s ease-in-out infinite alternate;
+    }
+
     @keyframes redGlow {
       0% { filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8)) brightness(1.1) hue-rotate(330deg); }
       100% { filter: drop-shadow(0 0 35px rgba(255, 50, 50, 1)) brightness(1.3) hue-rotate(320deg); }
@@ -297,6 +302,11 @@
     @keyframes purpleGlow {
       0% { filter: drop-shadow(0 0 30px rgba(148, 0, 211, 0.9)) brightness(1.2) hue-rotate(270deg); }
       100% { filter: drop-shadow(0 0 40px rgba(186, 85, 211, 1)) brightness(1.4) hue-rotate(260deg); }
+    }
+
+    @keyframes legendaryGlow {
+      0% { filter: drop-shadow(0 0 35px rgba(255, 165, 0, 0.9)) brightness(1.3) hue-rotate(180deg); }
+      100% { filter: drop-shadow(0 0 45px rgba(255, 200, 0, 1)) brightness(1.5) hue-rotate(160deg); }
     }
 
     .gold-bar.hit {
@@ -716,6 +726,10 @@
       background: linear-gradient(45deg, #9C27B0, #673AB7);
     }
 
+    .difficulty-badge.legendary {
+      background: linear-gradient(45deg, #FF9800, #FF5722);
+    }
+
     /* Styles pour le tableau des gagnants déplaçable */
     .winners-board {
       position: fixed;
@@ -979,7 +993,7 @@
   <div class="game-container" id="gameContainer">
     <div class="combo-indicator" id="comboIndicator">COMBO x0</div>
 
-    <h1>JEREM le DRESSEUR</h1>
+    <h1>JEREM BATLEBOX</h1>
     <div class="squirrel-logo"></div>
     
     <div class="difficulty-selector">
@@ -991,6 +1005,9 @@
       </div>
       <div class="difficulty-btn extreme" data-difficulty="extreme">
         <img src="https://i.ibb.co/hxXnkQh7/IMG-5861.png" alt="Extrême">
+      </div>
+      <div class="difficulty-btn legendary" data-difficulty="legendary">
+        <img src="https://i.ibb.co/SXgvrJhm/IMG-6173.png" alt="Légendaire">
       </div>
     </div>
     
@@ -1053,7 +1070,7 @@
 
   <div class="popup-overlay" id="victoryPopup">
     <div class="popup-content">
-      <h3>🎉 Ruche Cassée 🎉</h3>
+      <h3>🎉 Pokémon Vaincu ! 🎉</h3>
       <div id="popupRewardImage" class="popup-reward-image"></div>
       <p id="popupRewardText" class="popup-reward-text"></p>
       <div id="popupVictoryMessage" class="popup-victory-message"></div>
@@ -1397,6 +1414,10 @@
           pokemon1HP = 800;
           pokemon2HP = 2000;
           break;
+        case "legendary":
+          pokemon1HP = 1600;
+          pokemon2HP = 4000;
+          break;
       }
       
       document.getElementById('pokemon1').classList.remove('defeated');
@@ -1406,8 +1427,9 @@
       
       setTimeout(() => {
         let difficultyName = currentDifficulty === "easy" ? "facile" : 
-                             currentDifficulty === "hard" ? "difficile" : "extrême";
-        message.textContent = `Ruche ${difficultyName} - À tout moment la ruche peut se briser...`;
+                             currentDifficulty === "hard" ? "difficile" : 
+                             currentDifficulty === "extreme" ? "extrême" : "légendaire";
+        message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
       }, 2000);
       
       // Sauvegarde automatique après cette action
@@ -1421,8 +1443,9 @@
       
       setTimeout(() => {
         let difficultyName = currentDifficulty === "easy" ? "facile" : 
-                             currentDifficulty === "hard" ? "difficile" : "extrême";
-        message.textContent = `Ruche ${difficultyName} - À tout moment la ruche peut se briser...`;
+                             currentDifficulty === "hard" ? "difficile" : 
+                             currentDifficulty === "extreme" ? "extrême" : "légendaire";
+        message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
       }, 2000);
       
       // Sauvegarde automatique après cette action
@@ -1571,7 +1594,7 @@
         
         if (currentHP <= 0) {
           endGame();
-          addWinner("Dresseur", "RUCHÉ CASSÉE!", true);
+          addWinner("Dresseur", "POKÉMON VAINCU!", true);
         }
         
         // Sauvegarde automatique après l'attaque
@@ -1593,16 +1616,17 @@
     function updateUI() {
       if (currentHP === 0) {
         goldBar.className = "gold-bar broken " + currentDifficulty;
-        message.textContent = "💥 La ruche s'est brisée !";
+        message.textContent = "💥 Le Pokémon est vaincu !";
       } else {
         if (maxHP - currentHP >= maxHP * 0.7) {
           goldBar.classList.add("cracked");
-          message.textContent = "⚠️ La ruche commence à se fissurer...";
+          message.textContent = "⚠️ Le Pokémon commence à faiblir...";
         } else {
           goldBar.classList.remove("cracked");
           let difficultyName = currentDifficulty === "easy" ? "facile" : 
-                               currentDifficulty === "hard" ? "difficile" : "extrême";
-          message.textContent = `Ruche ${difficultyName} - À tout moment la ruche peut se briser...`;
+                               currentDifficulty === "hard" ? "difficile" : 
+                               currentDifficulty === "extreme" ? "extrême" : "légendaire";
+          message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
         }
       }
     }
@@ -1631,6 +1655,12 @@
           victoryText = "Incroyable ! Tu as vaincu le niveau extrême et gagné 5000 pièces !";
           rewardImg = "https://i.ibb.co/hxXnkQh7/IMG-5861.png";
           coinsReward = 5000;
+          break;
+        case "legendary":
+          rewardText = "10999 pièces !";
+          victoryText = "Légendaire ! Tu as vaincu le Pokémon légendaire et gagné 10999 pièces !";
+          rewardImg = "https://i.ibb.co/SXgvrJhm/IMG-6173.png";
+          coinsReward = 10999;
           break;
       }
       
@@ -1666,7 +1696,7 @@
       playBreakSound();
       setTimeout(() => createGoldShards(), 100);
       
-      message.textContent = "💥 Félicitations ! Tu as cassé la ruche de BattleBox Team Rocket ! 🌹✨";
+      message.textContent = "💥 Félicitations ! Tu as vaincu le Pokémon de BattleBox Team Rocket ! 🌹✨";
       
       setTimeout(() => {
         showVictoryPopup();
@@ -1804,7 +1834,7 @@
       };
       
       try {
-        localStorage.setItem('jeremDresseurSave', JSON.stringify(saveData));
+        localStorage.setItem('jeremBattleboxSave', JSON.stringify(saveData));
         
         // Afficher l'indicateur de sauvegarde
         saveIndicator.classList.add('show');
@@ -1818,7 +1848,7 @@
 
     function loadAutoSave() {
       try {
-        const savedData = localStorage.getItem('jeremDresseurSave');
+        const savedData = localStorage.getItem('jeremBattleboxSave');
         if (savedData) {
           const saveData = JSON.parse(savedData);
           
@@ -1910,7 +1940,7 @@
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `jerem-dresseur-save-${new Date().toISOString().slice(0, 10)}.json`;
+      link.download = `jerem-battlebox-save-${new Date().toISOString().slice(0, 10)}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -2006,6 +2036,11 @@
           pokemon1HP = 800;
           pokemon2HP = 2000;
           break;
+        case "legendary":
+          maxHP = 50000;
+          pokemon1HP = 1600;
+          pokemon2HP = 4000;
+          break;
       }
 
       currentHP = maxHP;
@@ -2025,8 +2060,9 @@
       
       goldBar.className = "gold-bar " + currentDifficulty;
       let difficultyName = currentDifficulty === "easy" ? "facile" : 
-                           currentDifficulty === "hard" ? "difficile" : "extrême";
-      message.textContent = `Ruche ${difficultyName} - À tout moment la ruche peut se briser...`;
+                           currentDifficulty === "hard" ? "difficile" : 
+                           currentDifficulty === "extreme" ? "extrême" : "légendaire";
+      message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
       
       closeVictoryPopup();
       closeCoinsPopupFunc();
@@ -2139,6 +2175,10 @@
         case 'x':
         case 'X':
           setDifficulty('extreme');
+          break;
+        case 'l':
+        case 'L':
+          setDifficulty('legendary');
           break;
         case 'Escape':
           closeVictoryPopup();
