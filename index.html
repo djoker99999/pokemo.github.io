@@ -42,7 +42,7 @@
 
     .game-container {
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
       background: rgba(10, 15, 30, 0.9);
       border-radius: 20px;
       padding: 20px;
@@ -102,24 +102,25 @@
     .difficulty-selector {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin: 15px 0;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
     }
 
     .difficulty-btn {
-      width: 90px;
-      height: 90px;
+      width: 200px;
+      height: 160px;
       border-radius: 15px;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s ease;
       border: 3px solid rgba(255, 255, 255, 0.3);
-      font-size: 14px;
       color: white;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 8px;
+      padding: 15px;
       position: relative;
       overflow: hidden;
       background: rgba(255, 255, 255, 0.1);
@@ -133,10 +134,12 @@
     }
 
     .difficulty-btn img {
-      width: 100%;
-      height: 100%;
+      width: 80px;
+      height: 80px;
       object-fit: contain;
-      filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+      margin-bottom: 10px;
+      z-index: 2;
     }
 
     .difficulty-btn:hover {
@@ -146,8 +149,24 @@
 
     .difficulty-btn.active {
       border-color: white;
-      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+      box-shadow: 0 0 20px rgba(255,255,255,0.8);
       background: rgba(255, 255, 255, 0.3);
+    }
+
+    .difficulty-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      z-index: 2;
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    }
+
+    .difficulty-reward {
+      font-size: 16px;
+      color: #ffd700;
+      font-weight: bold;
+      z-index: 2;
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
     }
 
     .instructions {
@@ -663,33 +682,21 @@
     }
 
     .coins-display {
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(45deg, #b8860b, #daa520);
-      color: white;
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-weight: bold;
-      animation: coinPop 1s ease;
-      pointer-events: none;
-      z-index: 4;
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 0.8em;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    @keyframes coinPop {
-      0% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px) scale(0.5);
-      }
-      50% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(-10px) scale(1.2);
-      }
-      100% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-30px) scale(1);
-      }
+    .coins-display.show {
+      opacity: 1;
     }
 
     .combo-indicator {
@@ -879,6 +886,62 @@
       opacity: 1;
     }
 
+    .attack-animation {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-image: url('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXk3aHQ3OGxoaDI1cDFjeW1kMzhiZmJtYzJkN3Q4N2JlZ2hkZmRxNSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/b1ijfyXPS2w6R5rWi1/giphy.gif');
+      background-size: contain;
+      background-repeat: no-repeat;
+      pointer-events: none;
+      z-index: 20;
+      animation: attackMove 0.8s ease-out forwards;
+    }
+
+    @keyframes attackMove {
+      0% {
+        opacity: 1;
+        transform: translateX(-100px) scale(0.5);
+      }
+      50% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(100px) scale(0.5);
+      }
+    }
+
+    .pokemon-hp-bar {
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .pokemon-hp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .pokemon-hp-text {
+      position: absolute;
+      bottom: -35px;
+      left: 0;
+      width: 100%;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 3px rgba(0,0,0,0.8);
+    }
+
     @media (min-width: 768px) {
       .game-container {
         padding: 30px;
@@ -920,6 +983,24 @@
       .attack-mode-image img {
         width: 55px;
         height: 55px;
+      }
+
+      .difficulty-btn {
+        width: 220px;
+        height: 180px;
+      }
+
+      .difficulty-btn img {
+        width: 90px;
+        height: 90px;
+      }
+
+      .difficulty-name {
+        font-size: 20px;
+      }
+
+      .difficulty-reward {
+        font-size: 18px;
       }
     }
 
@@ -964,6 +1045,24 @@
         left: 10px;
         top: 80px;
       }
+
+      .difficulty-btn {
+        width: 160px;
+        height: 120px;
+      }
+
+      .difficulty-btn img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .difficulty-name {
+        font-size: 14px;
+      }
+
+      .difficulty-reward {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -971,9 +1070,8 @@
   <div class="save-indicator" id="saveIndicator">Sauvegarde automatique...</div>
 
   <div class="pool-display" id="poolDisplay">
-    <h3>🌹 Pool de Roses</h3>
+    <h3>💰 Pièces Totales</h3>
     <div class="pool-amount" id="poolAmount">0</div>
-    <div class="pool-chance">Chance de drop: 1/500</div>
   </div>
 
   <div class="winners-board" id="winnersBoard">
@@ -991,57 +1089,75 @@
     
     <div class="difficulty-selector">
       <div class="difficulty-btn easy active" data-difficulty="easy">
-        <img src="https://i.ibb.co/k2tByVgX/IMG-6171.png" alt="Facile">
+        <img src="https://i.ibb.co/k2tByVgX/IMG-6171.png" alt="L'arbre à diamant">
+        <div class="difficulty-name">Facile</div>
+        <div class="difficulty-reward">1,088 pièces</div>
       </div>
       <div class="difficulty-btn hard" data-difficulty="hard">
-        <img src="https://i.ibb.co/ymxJfDqY/IMG-6172.png" alt="Difficile">
+        <img src="https://i.ibb.co/ymxJfDqY/IMG-6172.png" alt="Baleine">
+        <div class="difficulty-name">Difficile</div>
+        <div class="difficulty-reward">2,250 pièces</div>
       </div>
       <div class="difficulty-btn extreme" data-difficulty="extreme">
-        <img src="https://i.ibb.co/hxXnkQh7/IMG-5861.png" alt="Extrême">
+        <img src="https://i.ibb.co/hxXnkQh7/IMG-5861.png" alt="Léon chaton">
+        <div class="difficulty-name">Extrême</div>
+        <div class="difficulty-reward">5,000 pièces</div>
       </div>
       <div class="difficulty-btn legendary" data-difficulty="legendary">
-        <img src="https://i.ibb.co/SXgvrJhm/IMG-6173.png" alt="Légendaire">
+        <img src="https://i.ibb.co/SXgvrJhm/IMG-6173.png" alt="Le faucon">
+        <div class="difficulty-name">Légendaire</div>
+        <div class="difficulty-reward">10,999 pièces</div>
       </div>
     </div>
     
     <div class="gold-container">
-      <div class="pokemon-monster pokemon1" id="pokemon1"></div>
+      <div class="pokemon-monster pokemon1" id="pokemon1">
+        <div class="pokemon-hp-bar">
+          <div class="pokemon-hp-fill" id="pokemon1HpFill" style="width: 100%"></div>
+        </div>
+        <div class="pokemon-hp-text" id="pokemon1HpText">100%</div>
+      </div>
       
       <div class="gold-bar easy" id="goldBar"></div>
       
-      <div class="pokemon-monster pokemon2" id="pokemon2"></div>
+      <div class="pokemon-monster pokemon2" id="pokemon2">
+        <div class="pokemon-hp-bar">
+          <div class="pokemon-hp-fill" id="pokemon2HpFill" style="width: 100%"></div>
+        </div>
+        <div class="pokemon-hp-text" id="pokemon2HpText">100%</div>
+      </div>
       
       <div class="hammer" id="hammer">🔨</div>
     </div>
 
     <div class="instructions">
-      <h2>🌹 BAT LE POKEMON ET GAGNE LE CADEAUX</h2>
+      <h2>⚡ BAT LE POKEMON ET GAGNE DES RÉCOMPENSES</h2>
       <p>Un Coup = Un Point de Vie en Moins</p>
     </div>
 
     <div class="attack-modes">
       <div id="mode1" class="attack-mode-image active">
-        <img src="https://i.ibb.co/WNXDxn2y/IMG-7354-Photoroom.png" alt="Rose - 1 coup">
+        <img src="https://i.ibb.co/WNXDxn2y/IMG-7354-Photoroom.png" alt="1 coup">
         <div class="attack-mode-label">1 coup</div>
       </div>
       <div id="mode10" class="attack-mode-image">
-        <img src="https://i.ibb.co/7JsBRrCn/IMG-5885.png" alt="Rosa - 10 coups">
+        <img src="https://i.ibb.co/7JsBRrCn/IMG-5885.png" alt="10 coups">
         <div class="attack-mode-label">10 coups</div>
       </div>
       <div id="mode30" class="attack-mode-image">
-        <img src="https://i.ibb.co/8DMJ0cxy/IMG-7355-Photoroom.png" alt="Donuts - 30 coups">
+        <img src="https://i.ibb.co/8DMJ0cxy/IMG-7355-Photoroom.png" alt="30 coups">
         <div class="attack-mode-label">30 coups</div>
       </div>
       <div id="mode100" class="attack-mode-image">
-        <img src="https://i.ibb.co/C5M6DHcS/IMG-7356-Photoroom.png" alt="Coeurs - 100 coups">
+        <img src="https://i.ibb.co/C5M6DHcS/IMG-7356-Photoroom.png" alt="100 coups">
         <div class="attack-mode-label">100 coups</div>
       </div>
       <div id="mode500" class="attack-mode-image">
-        <img src="https://i.ibb.co/nNy17WfL/IMG-6065.png" alt="Mini Gun - 500 coups">
+        <img src="https://i.ibb.co/nNy17WfL/IMG-6065.png" alt="500 coups">
         <div class="attack-mode-label">500 coups</div>
       </div>
       <div id="mode1000" class="attack-mode-image">
-        <img src="https://i.ibb.co/JMPfpWV/IMG-5851.png" alt="Galaxie - 1000 coups">
+        <img src="https://i.ibb.co/JMPfpWV/IMG-5851.png" alt="1000 coups">
         <div class="attack-mode-label">1000 coups</div>
       </div>
     </div>
@@ -1081,22 +1197,10 @@
     </div>
   </div>
 
-  <div class="popup-overlay" id="rosePoolPopup">
-    <div class="popup-content">
-      <h3>🌹 Pool de Roses Gagné ! 🌹</h3>
-      <div style="font-size: 80px; margin: 20px 0;">🌹</div>
-      <p class="popup-reward-text" id="rosePoolPopupText" style="font-size: 2em; color: #ff69b4;"></p>
-      <div class="popup-victory-message">Incroyable ! Tu as gagné le pool de roses !</div>
-      <button class="popup-close-btn" id="closeRosePoolPopupBtn">Continuer</button>
-    </div>
-  </div>
-
   <script>
     // Variables globales
     let maxHP, currentHP, totalHits;
-    let hitsUntilCoin = 4;
     let attackMode = 1;
-    let rosesEarnedThisGold = 0;
     let combo = 0;
     let lastHitTime = 0;
     let isAttacking = false;
@@ -1107,10 +1211,6 @@
     let pokemon1HP, pokemon2HP;
     let pokemon1MaxHP, pokemon2MaxHP;
     let totalCoins = 0;
-    
-    // Pool de roses
-    let rosePool = 0;
-    let hitsSinceLastPoolAddition = 0;
 
     // Liste des gagnants
     let winnersList = [];
@@ -1151,10 +1251,6 @@
     const coinsPopup = document.getElementById("coinsPopup");
     const coinsPopupText = document.getElementById("coinsPopupText");
     const closeCoinsPopupBtn = document.getElementById("closeCoinsPopupBtn");
-    
-    const rosePoolPopup = document.getElementById("rosePoolPopup");
-    const rosePoolPopupText = document.getElementById("rosePoolPopupText");
-    const closeRosePoolPopupBtn = document.getElementById("closeRosePoolPopupBtn");
     
     const poolDisplay = document.getElementById("poolDisplay");
     const poolAmount = document.getElementById("poolAmount");
@@ -1345,6 +1441,19 @@
       }, 1000);
     }
 
+    function createAttackAnimation(startX, startY, targetX, targetY) {
+      const attackAnim = document.createElement('div');
+      attackAnim.className = 'attack-animation';
+      attackAnim.style.left = startX + 'px';
+      attackAnim.style.top = startY + 'px';
+      
+      document.querySelector('.gold-container').appendChild(attackAnim);
+      
+      setTimeout(() => {
+        attackAnim.remove();
+      }, 800);
+    }
+
     function updateCombo() {
       const currentTime = Date.now();
       if (currentTime - lastHitTime > 2000) {
@@ -1397,6 +1506,8 @@
       pokemon1HP = pokemon1MaxHP;
       pokemon2HP = pokemon2MaxHP;
       
+      updatePokemonHPDisplay();
+      
       document.getElementById('pokemon1').classList.remove('defeated');
       document.getElementById('pokemon2').classList.remove('defeated');
       
@@ -1410,6 +1521,37 @@
       }, 2000);
       
       autoSave();
+    }
+
+    function updatePokemonHPDisplay() {
+      const pokemon1HpPercent = (pokemon1HP / pokemon1MaxHP) * 100;
+      const pokemon2HpPercent = (pokemon2HP / pokemon2MaxHP) * 100;
+      
+      document.getElementById('pokemon1HpFill').style.width = pokemon1HpPercent + '%';
+      document.getElementById('pokemon2HpFill').style.width = pokemon2HpPercent + '%';
+      
+      document.getElementById('pokemon1HpText').textContent = Math.round(pokemon1HpPercent) + '%';
+      document.getElementById('pokemon2HpText').textContent = Math.round(pokemon2HpPercent) + '%';
+      
+      // Changer la couleur de la barre en fonction des PV
+      const pokemon1HpFill = document.getElementById('pokemon1HpFill');
+      const pokemon2HpFill = document.getElementById('pokemon2HpFill');
+      
+      if (pokemon1HpPercent > 50) {
+        pokemon1HpFill.style.background = 'linear-gradient(90deg, #4CAF50, #8BC34A)';
+      } else if (pokemon1HpPercent > 25) {
+        pokemon1HpFill.style.background = 'linear-gradient(90deg, #FF9800, #FFC107)';
+      } else {
+        pokemon1HpFill.style.background = 'linear-gradient(90deg, #F44336, #E91E63)';
+      }
+      
+      if (pokemon2HpPercent > 50) {
+        pokemon2HpFill.style.background = 'linear-gradient(90deg, #4CAF50, #8BC34A)';
+      } else if (pokemon2HpPercent > 25) {
+        pokemon2HpFill.style.background = 'linear-gradient(90deg, #FF9800, #FFC107)';
+      } else {
+        pokemon2HpFill.style.background = 'linear-gradient(90deg, #F44336, #E91E63)';
+      }
     }
 
     function changeHiveImage() {
@@ -1444,7 +1586,6 @@
       isAttacking = true;
       
       let hits = attackMode;
-      let rosesEarned = 0;
       let wasCracked = goldBar.classList.contains('cracked');
       
       hammer.classList.add('hitting');
@@ -1489,33 +1630,17 @@
             createHitParticles();
             createImpactEffect();
           }
-          
-          hitsUntilCoin--;
-          if (hitsUntilCoin <= 0) {
-            rosesEarnedThisGold++;
-            rosesEarned++;
-            hitsUntilCoin = 4;
-          }
-          
-          hitsSinceLastPoolAddition++;
-          if (hitsSinceLastPoolAddition >= 100) {
-            rosePool += 5;
-            hitsSinceLastPoolAddition = 0;
-            updatePoolDisplay();
-          }
-          
-          if (rosePool > 0 && Math.random() < 0.002) {
-            const poolPercentage = Math.floor(Math.random() * 41) + 10;
-            const rosesWon = Math.floor(rosePool * (poolPercentage / 100));
-            rosePool -= rosesWon;
-            showRosePoolPopup("Dresseur", rosesWon, poolPercentage);
-            updatePoolDisplay();
-          }
         } else if (randomTarget === 'pokemon1') {
           pokemon1HP--;
+          updatePokemonHPDisplay();
+          
+          // Créer une animation d'attaque vers le Pokémon 1
+          createAttackAnimation(100, 200, 150, 200);
+          
           if (pokemon1HP <= 0) {
             const coinsEarned = getRandomCoins(30, 150);
             totalCoins += coinsEarned;
+            updatePoolDisplay();
             showCoinsEarned(document.getElementById('pokemon1'), coinsEarned);
             addWinner("Dresseur", `${coinsEarned} pièces`);
             setTimeout(() => showCoinsPopup(coinsEarned), 500);
@@ -1524,9 +1649,15 @@
           }
         } else if (randomTarget === 'pokemon2') {
           pokemon2HP--;
+          updatePokemonHPDisplay();
+          
+          // Créer une animation d'attaque vers le Pokémon 2
+          createAttackAnimation(100, 200, 450, 200);
+          
           if (pokemon2HP <= 0) {
             const coinsEarned = getRandomCoins(30, 150);
             totalCoins += coinsEarned;
+            updatePoolDisplay();
             showCoinsEarned(document.getElementById('pokemon2'), coinsEarned);
             addWinner("Dresseur", `${coinsEarned} pièces`);
             setTimeout(() => showCoinsPopup(coinsEarned), 500);
@@ -1541,10 +1672,6 @@
       }
       if (shakeType) {
         gameContainer.classList.add(shakeType);
-      }
-      
-      if (rosesEarned > 0) {
-        showRoseGain(rosesEarned);
       }
       
       updateUI();
@@ -1570,17 +1697,6 @@
         
         autoSave();
       }, animationDuration);
-    }
-
-    function showRoseGain(amount) {
-      const roseDisplay = document.createElement('div');
-      roseDisplay.className = 'coins-display';
-      roseDisplay.textContent = `+${amount} 🌹`;
-      goldBar.parentElement.appendChild(roseDisplay);
-      
-      setTimeout(() => {
-        roseDisplay.remove();
-      }, 1000);
     }
 
     function updateUI() {
@@ -1650,6 +1766,7 @@
       popupVictoryMessage.textContent = victoryText;
       
       totalCoins += coinsReward;
+      updatePoolDisplay();
       
       victoryPopup.style.display = 'flex';
       setTimeout(() => {
@@ -1670,7 +1787,7 @@
       playBreakSound();
       setTimeout(() => createGoldShards(), 100);
       
-      message.textContent = "💥 Félicitations ! Tu as vaincu le Pokémon de BattleBox Team Rocket ! 🌹✨";
+      message.textContent = "💥 Félicitations ! Tu as vaincu le Pokémon de BattleBox Team Rocket ! ⚡✨";
       
       setTimeout(() => {
         showVictoryPopup();
@@ -1753,24 +1870,7 @@
     }
 
     function updatePoolDisplay() {
-      poolAmount.textContent = rosePool;
-    }
-
-    function showRosePoolPopup(userName, rosesWon, percentage) {
-      rosePoolPopupText.textContent = `${rosesWon} roses (${percentage}% du pool)`;
-      rosePoolPopup.style.display = 'flex';
-      setTimeout(() => {
-          rosePoolPopup.classList.add('active');
-      }, 10);
-      
-      addWinner(userName, `${rosesWon} roses`);
-    }
-
-    function closeRosePoolPopupFunc() {
-      rosePoolPopup.classList.remove('active');
-      setTimeout(() => {
-          rosePoolPopup.style.display = 'none';
-      }, 300);
+      poolAmount.textContent = totalCoins;
     }
 
     function autoSave() {
@@ -1790,11 +1890,6 @@
         pokemon1MaxHP,
         pokemon2MaxHP,
         totalCoins,
-        rosePool,
-        hitsSinceLastPoolAddition,
-        totalHits,
-        hitsUntilCoin,
-        rosesEarnedThisGold,
         currentHiveIndex,
         winnersList,
         attackMode,
@@ -1828,11 +1923,6 @@
           pokemon1MaxHP = saveData.pokemon1MaxHP || 200;
           pokemon2MaxHP = saveData.pokemon2MaxHP || 500;
           totalCoins = saveData.totalCoins || 0;
-          rosePool = saveData.rosePool || 0;
-          hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
-          totalHits = saveData.totalHits || 0;
-          hitsUntilCoin = saveData.hitsUntilCoin || 4;
-          rosesEarnedThisGold = saveData.rosesEarnedThisGold || 0;
           currentHiveIndex = saveData.currentHiveIndex || 0;
           winnersList = saveData.winnersList || [];
           attackMode = saveData.attackMode || 1;
@@ -1863,6 +1953,7 @@
           
           // Mettre à jour les affichages
           updateUI();
+          updatePokemonHPDisplay();
           updateWinnersDisplay();
           updatePoolDisplay();
           
@@ -1900,11 +1991,6 @@
         pokemon1MaxHP,
         pokemon2MaxHP,
         totalCoins,
-        rosePool,
-        hitsSinceLastPoolAddition,
-        totalHits,
-        hitsUntilCoin,
-        rosesEarnedThisGold,
         currentHiveIndex,
         winnersList,
         attackMode,
@@ -1949,11 +2035,6 @@
             pokemon1MaxHP = saveData.pokemon1MaxHP || 200;
             pokemon2MaxHP = saveData.pokemon2MaxHP || 500;
             totalCoins = saveData.totalCoins || 0;
-            rosePool = saveData.rosePool || 0;
-            hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
-            totalHits = saveData.totalHits || 0;
-            hitsUntilCoin = saveData.hitsUntilCoin || 4;
-            rosesEarnedThisGold = saveData.rosesEarnedThisGold || 0;
             currentHiveIndex = saveData.currentHiveIndex || 0;
             winnersList = saveData.winnersList || [];
             attackMode = saveData.attackMode || 1;
@@ -1981,6 +2062,7 @@
             }
             
             updateUI();
+            updatePokemonHPDisplay();
             updateWinnersDisplay();
             updatePoolDisplay();
             
@@ -2025,14 +2107,11 @@
       pokemon1HP = pokemon1MaxHP;
       pokemon2HP = pokemon2MaxHP;
       totalHits = 0;
-      hitsUntilCoin = 4;
-      rosesEarnedThisGold = 0;
       combo = 0;
       lastHitTime = 0;
       isAttacking = false;
       
-      rosePool = 0;
-      hitsSinceLastPoolAddition = 0;
+      updatePokemonHPDisplay();
       
       document.getElementById('pokemon1').classList.remove('defeated');
       document.getElementById('pokemon2').classList.remove('defeated');
@@ -2045,7 +2124,6 @@
       
       closeVictoryPopup();
       closeCoinsPopupFunc();
-      closeRosePoolPopupFunc();
       comboIndicator.style.display = "none";
       
       updateWinnersDisplay();
@@ -2078,7 +2156,6 @@
 
     closePopupBtn.addEventListener('click', closeVictoryPopup);
     closeCoinsPopupBtn.addEventListener('click', closeCoinsPopupFunc);
-    closeRosePoolPopupBtn.addEventListener('click', closeRosePoolPopupFunc);
 
     victoryPopup.addEventListener('click', function(e) {
       if (e.target === this) {
@@ -2089,12 +2166,6 @@
     coinsPopup.addEventListener('click', function(e) {
       if (e.target === this) {
         closeCoinsPopupFunc();
-      }
-    });
-    
-    rosePoolPopup.addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeRosePoolPopupFunc();
       }
     });
 
