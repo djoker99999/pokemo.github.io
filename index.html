@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JEREM BATTLEBOX</title>
   <style>
+    /* Tous les styles CSS précédents restent identiques */
     * {
       margin: 0;
       padding: 0;
@@ -330,6 +331,37 @@
       opacity: 0.3;
       filter: grayscale(100%) brightness(0.3);
       animation: knockout 1.5s ease-out forwards;
+    }
+    
+    .jackpot-bar-container {
+      width: 80%;
+      max-width: 400px;
+      height: 30px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #ff69b4;
+      border-radius: 15px;
+      margin: 10px auto 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+    }
+    .jackpot-bar-progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(45deg, #ff69b4, #ff85c8);
+      border-radius: 12px;
+      transition: width 0.5s ease;
+    }
+    .jackpot-bar-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+      text-shadow: 0 0 5px black;
+      white-space: nowrap;
     }
 
     .attack-modes {
@@ -732,8 +764,8 @@
 
     .winners-board {
       position: fixed;
-      top: 100px;
-      right: 20px;
+      top: 10px;
+      right: 10px;
       background: rgba(0, 0, 0, 0.9);
       padding: 15px;
       border-radius: 15px;
@@ -801,13 +833,13 @@
 
     .pool-display {
       position: fixed;
-      top: 100px;
-      left: 20px;
+      top: 180px;
+      left: 10px;
       background: rgba(0, 0, 0, 0.9);
       padding: 15px;
       border-radius: 15px;
       z-index: 100;
-      max-width: 200px;
+      max-width: 220px;
       border: 2px solid rgba(255, 105, 180, 0.7);
       backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
@@ -821,6 +853,20 @@
       text-align: center;
       text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
       user-select: none;
+    }
+    
+    #coinPoolDisplay {
+      top: 330px;
+      left: 10px;
+      border: 2px solid rgba(255, 215, 0, 0.7);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+    #coinPoolDisplay h3 {
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    #coinPoolAmount {
+      color: #ffd700;
     }
 
     .pool-amount {
@@ -879,7 +925,6 @@
       opacity: 1;
     }
 
-    /* CSS POUR LES DÉGÂTS FLOTTANTS */
     .floating-text {
       position: absolute;
       font-size: 1.8em;
@@ -903,7 +948,6 @@
       }
     }
 
-    /* CSS POUR LE PANNEAU ADMIN */
     .admin-panel {
       position: fixed;
       top: 10px;
@@ -912,7 +956,7 @@
       border: 2px solid #ff0000;
       border-radius: 10px;
       padding: 15px;
-      z-index: 1002; /* Au-dessus des autres panneaux */
+      z-index: 1002;
       cursor: move;
       backdrop-filter: blur(5px);
       box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
@@ -961,7 +1005,6 @@
       min-height: 15px;
       font-weight: bold;
     }
-
 
     @media (min-width: 768px) {
       .game-container {
@@ -1031,6 +1074,15 @@
         width: 280px;
         height: 200px;
       }
+      
+      .jackpot-bar-container {
+        width: 90%;
+        max-width: 280px;
+        height: 25px;
+      }
+      .jackpot-bar-text {
+        font-size: 14px;
+      }
 
       .pokemon-monster {
         width: 80px;
@@ -1040,19 +1092,22 @@
       .winners-board {
         max-width: 250px;
         right: 10px;
-        top: 80px;
+        top: 10px;
       }
       
       .pool-display {
         max-width: 180px;
         left: 10px;
-        top: 80px;
+        top: 180px;
       }
       
-      /* AJOUT pour le panneau admin sur petit écran */
+      #coinPoolDisplay {
+        top: 330px;
+      }
+
       .admin-panel {
         max-width: 180px;
-        top: 280px;
+        top: 480px;
         left: 10px;
       }
     }
@@ -1064,17 +1119,23 @@
   <div class="admin-panel" id="adminPanel">
     <h3>Admin Panel</h3>
     <div class="admin-field">
-      <label for="forceJackpotTurns">Jackpot dans :</label>
+      <label for="forceJackpotTurns">Jackpot 🌹 dans :</label>
       <input type="number" id="forceJackpotTurns" value="100" min="1">
     </div>
-    <button id="setForceJackpotBtn">Forcer Jackpot</button>
+    <button id="setForceJackpotBtn">Forcer Jackpot 🌹</button>
     <div id="adminMessage"></div>
   </div>
 
   <div class="pool-display" id="poolDisplay">
     <h3>🌹 Pool de Roses</h3>
-    <div class="pool-amount" id="poolAmount">0</div>
-    <div class="pool-chance">Chance de drop: 1/500</div>
+    <div class="pool-amount" id="poolAmount">1000</div>
+    <div class="pool-chance">Chance de drop: 1/10000</div>
+  </div>
+  
+  <div class="pool-display" id="coinPoolDisplay">
+    <h3>💰 Pool de Pièces</h3>
+    <div class="pool-amount" id="coinPoolAmount">0</div>
+    <div class="pool-chance">Chance de drop: 1/2000</div>
   </div>
 
   <div class="winners-board" id="winnersBoard">
@@ -1113,6 +1174,11 @@
       <div class="pokemon-monster pokemon2" id="pokemon2"></div>
       
       <div class="hammer" id="hammer">🔨</div>
+    </div>
+    
+    <div class="jackpot-bar-container">
+      <div class="jackpot-bar-progress" id="jackpotBarProgress"></div>
+      <span class="jackpot-bar-text" id="jackpotBarText">Jackpot: 1000 🌹</span>
     </div>
 
     <div class="instructions">
@@ -1191,6 +1257,16 @@
       <button class="popup-close-btn" id="closeRosePoolPopupBtn">Continuer</button>
     </div>
   </div>
+  
+  <div class="popup-overlay" id="coinPoolPopup">
+    <div class="popup-content">
+      <h3>💰 Pool de Pièces Gagné ! 💰</h3>
+      <div style="font-size: 80px; margin: 20px 0;">💰</div>
+      <p class="popup-reward-text" id="coinPoolPopupText" style="font-size: 2em; color: #ffd700;"></p>
+      <div class="popup-victory-message">Félicitations ! Tu as gagné le pool de pièces !</div>
+      <button class="popup-close-btn" id="closeCoinPoolPopupBtn">Continuer</button>
+    </div>
+  </div>
 
   <script>
     // Variables globales
@@ -1209,17 +1285,21 @@
     let pokemon1MaxHP, pokemon2MaxHP;
     let totalCoins = 0;
     
-    // Pool de roses
-    let rosePool = 0;
+    // Pool de roses (Jackpot)
+    let rosePool = 1000;
     let hitsSinceLastPoolAddition = 0;
+    
+    // Pool de pièces
+    let coinPool = 0;
+    let hitsSinceLastCoinPoolAddition = 0;
 
     // Liste des gagnants
     let winnersList = [];
 
-    // VARIABLE pour le jackpot
+    // Variable pour le jackpot
     let forceJackpotCounter = -1; // -1 = désactivé
 
-    // Liste des images de ruche (AVEC LES 7 NOUVELLES IMAGES)
+    // Liste des images de ruche
     const hiveImages = [
       'https://i.gifer.com/4o45.gif',
       'https://i.gifer.com/3nRA.gif',
@@ -1267,8 +1347,15 @@
     const rosePoolPopupText = document.getElementById("rosePoolPopupText");
     const closeRosePoolPopupBtn = document.getElementById("closeRosePoolPopupBtn");
     
+    const coinPoolPopup = document.getElementById("coinPoolPopup");
+    const coinPoolPopupText = document.getElementById("coinPoolPopupText");
+    const closeCoinPoolPopupBtn = document.getElementById("closeCoinPoolPopupBtn");
+    
     const poolDisplay = document.getElementById("poolDisplay");
     const poolAmount = document.getElementById("poolAmount");
+    
+    const coinPoolDisplay = document.getElementById("coinPoolDisplay");
+    const coinPoolAmount = document.getElementById("coinPoolAmount");
 
     const winnersListElement = document.getElementById("winnersList");
     const winnersBoard = document.getElementById("winnersBoard");
@@ -1281,6 +1368,9 @@
     const forceJackpotInput = document.getElementById("forceJackpotTurns");
     const setForceJackpotBtn = document.getElementById("setForceJackpotBtn");
     const adminMessage = document.getElementById("adminMessage");
+    
+    const jackpotBarProgress = document.getElementById("jackpotBarProgress");
+    const jackpotBarText = document.getElementById("jackpotBarText");
 
     const impactEffects = ["💥", "🔥", "⭐", "💫", "✨", "💢"];
 
@@ -1291,7 +1381,6 @@
       
       function dragMouseDown(e) {
         e = e || window.event;
-        // Empêcher le drag si on clique sur un input ou un bouton dans le panneau
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') {
           return;
         }
@@ -1321,7 +1410,8 @@
 
     makeDraggable(winnersBoard);
     makeDraggable(poolDisplay);
-    makeDraggable(adminPanel); // Rendre le panneau admin déplaçable
+    makeDraggable(coinPoolDisplay);
+    makeDraggable(adminPanel);
 
     function initAudioContext() {
       try {
@@ -1467,7 +1557,6 @@
       }, 1000);
     }
     
-    // FONCTION pour afficher les dégâts flottants
     function showFloatingText(targetId, text, color = '#ff4d4d') {
       const textEl = document.createElement('div');
       textEl.className = 'floating-text';
@@ -1488,7 +1577,6 @@
         top = '40%';
       }
 
-      // Ajouter un décalage aléatoire
       textEl.style.top = `calc(${top} + ${Math.random() * 40 - 20}px)`;
       textEl.style.left = `calc(${left} + ${Math.random() * 40 - 20}px)`;
       
@@ -1496,9 +1584,8 @@
 
       setTimeout(() => {
         textEl.remove();
-      }, 1450); // Doit correspondre à la durée de l'animation
+      }, 1450);
     }
-
 
     function updateCombo() {
       const currentTime = Date.now();
@@ -1593,25 +1680,22 @@
       }, 1500);
     }
 
-    // MODIFICATION DE LA FONCTION ATTACK
     function attack() {
       if ((currentHP <= 0 && pokemon1HP <= 0 && pokemon2HP <= 0) || isAttacking) return;
       
       isAttacking = true;
       
-      // Compteurs de dégâts pour cette attaque
       let damageToHive = 0;
       let damageToPokemon1 = 0;
       let damageToPokemon2 = 0;
 
-      // Logique du jackpot forcé
       let forcedJackpot = false;
       if (forceJackpotCounter > 0) {
         forceJackpotCounter--;
-        adminMessage.textContent = `Jackpot dans ${forceJackpotCounter} coups...`;
+        adminMessage.textContent = `Jackpot 🌹 dans ${forceJackpotCounter} coups...`;
         if (forceJackpotCounter === 0) {
           forcedJackpot = true;
-          adminMessage.textContent = `JACKPOT FORCÉ !`;
+          adminMessage.textContent = `JACKPOT 🌹 FORCÉ !`;
         }
       }
 
@@ -1656,7 +1740,7 @@
         if (randomTarget === 'hive') {
           totalHits++;
           currentHP--;
-          damageToHive++; // incrémenter le compteur
+          damageToHive++;
           
           if (attackMode <= 30) {
             createHitParticles();
@@ -1670,34 +1754,51 @@
             hitsUntilCoin = 4;
           }
           
+          // Logique Pool de Roses (Jackpot)
           hitsSinceLastPoolAddition++;
           if (hitsSinceLastPoolAddition >= 100) {
-            rosePool += 5;
+            rosePool += 5; // +5 roses tous les 100 coups
             hitsSinceLastPoolAddition = 0;
-            updatePoolDisplay();
+            updateAllPoolDisplays();
           }
           
-          // Logique du jackpot
-          const jackpotChance = (rosePool > 0 && Math.random() < 0.002);
-          if (jackpotChance || (forcedJackpot && i === 0)) { // se déclenche au hasard OU si forcé
-            const poolPercentage = Math.floor(Math.random() * 41) + 10;
-            const rosesWon = Math.floor(rosePool * (poolPercentage / 100));
-            rosePool -= rosesWon;
-            showRosePoolPopup("Dresseur", rosesWon, poolPercentage);
-            updatePoolDisplay();
+          // Logique Pool de Pièces
+          hitsSinceLastCoinPoolAddition++;
+          if (hitsSinceLastCoinPoolAddition >= 1000) {
+            coinPool += 20; // +20 pièces tous les 1000 coups
+            hitsSinceLastCoinPoolAddition = 0;
+            updateAllPoolDisplays();
+          }
+          
+          // Chance de gagner le Jackpot de ROSES (1/10000)
+          const jackpotChance = (rosePool > 0 && Math.random() < 0.0001);
+          if (jackpotChance || (forcedJackpot && i === 0)) {
+            const rosesWon = rosePool;
+            rosePool = 1000; // Remise à 1000 roses
+            showRosePoolPopup("Dresseur", rosesWon);
+            updateAllPoolDisplays();
 
-            // Réinitialiser le jackpot forcé
             if (forcedJackpot) {
               forcedJackpot = false;
-              forceJackpotCounter = -1; // Désactiver le compteur
-              setTimeout(() => { // Effacer le message après un délai
+              forceJackpotCounter = -1;
+              setTimeout(() => {
                   if (adminMessage.textContent.startsWith('JACKPOT')) adminMessage.textContent = '';
               }, 2000);
             }
           }
+          
+          // Chance de gagner le Pool de PIÈCES (1/2000)
+          const coinJackpotChance = (coinPool > 0 && Math.random() < 0.0005);
+          if (coinJackpotChance) {
+            const coinsWon = coinPool;
+            coinPool = 0;
+            showCoinPoolPopup("Dresseur", coinsWon);
+            updateAllPoolDisplays();
+          }
+
         } else if (randomTarget === 'pokemon1') {
           pokemon1HP--;
-          damageToPokemon1++; // incrémenter le compteur
+          damageToPokemon1++;
           if (pokemon1HP <= 0) {
             const coinsEarned = getRandomCoins(30, 150);
             totalCoins += coinsEarned;
@@ -1709,7 +1810,7 @@
           }
         } else if (randomTarget === 'pokemon2') {
           pokemon2HP--;
-          damageToPokemon2++; // incrémenter le compteur
+          damageToPokemon2++;
           if (pokemon2HP <= 0) {
             const coinsEarned = getRandomCoins(30, 150);
             totalCoins += coinsEarned;
@@ -1729,14 +1830,9 @@
         gameContainer.classList.add(shakeType);
       }
       
-      // Afficher les dégâts flottants totaux
-      if (damageToHive > 0) showFloatingText('goldBar', `-${damageToHive} HP`, '#ffc84d'); // Dégâts jaunes pour la ruche
+      if (damageToHive > 0) showFloatingText('goldBar', `-${damageToHive} HP`, '#ffc84d');
       if (damageToPokemon1 > 0) showFloatingText('pokemon1', `-${damageToPokemon1} HP`, '#ff4d4d');
       if (damageToPokemon2 > 0) showFloatingText('pokemon2', `-${damageToPokemon2} HP`, '#ff4d4d');
-      
-      if (rosesEarned > 0) {
-        // showRoseGain(rosesEarned); // LIGNE COMMENTÉE (DÉSACIVÉE)
-      }
       
       updateUI();
       
@@ -1775,14 +1871,12 @@
     }
 
     function updateUI() {
-      // Retirer toutes les classes d'animation précédentes
       goldBar.classList.remove('hit', 'heavy-hit', 'critical-hit');
       
       if (currentHP === 0) {
         goldBar.className = "gold-bar broken " + currentDifficulty;
         message.textContent = "💥 Le Pokémon est vaincu !";
       } else {
-        // Conserver la classe de difficulté
         goldBar.className = "gold-bar " + currentDifficulty;
         
         if (maxHP - currentHP >= maxHP * 0.7) {
@@ -1943,24 +2037,55 @@
       });
     }
 
-    function updatePoolDisplay() {
+    function updateAllPoolDisplays() {
+      // 1. Panneau Pool de Roses
       poolAmount.textContent = rosePool;
+      
+      // 2. Panneau Pool de Pièces
+      coinPoolAmount.textContent = coinPool;
+
+      // 3. Barre de Jackpot (pour les roses)
+      jackpotBarText.textContent = `Jackpot: ${rosePool} 🌹`;
+      const baseJackpot = 1000;
+      const visualMax = 5000; // La barre est "pleine" à 5000 (1000 base + 4000 bonus)
+      let percent = ((rosePool - baseJackpot) / (visualMax - baseJackpot)) * 100;
+      if (percent < 0) percent = 0;
+      if (percent > 100) percent = 100;
+      
+      jackpotBarProgress.style.width = percent + '%';
     }
 
-    function showRosePoolPopup(userName, rosesWon, percentage) {
-      rosePoolPopupText.textContent = `${rosesWon} roses (${percentage}% du pool)`;
+    function showRosePoolPopup(userName, rosesWon) {
+      rosePoolPopupText.textContent = `${rosesWon} roses !`;
       rosePoolPopup.style.display = 'flex';
       setTimeout(() => {
           rosePoolPopup.classList.add('active');
       }, 10);
       
-      addWinner(userName, `${rosesWon} roses`);
+      addWinner(userName, `${rosesWon} 🌹`);
+    }
+    
+    function showCoinPoolPopup(userName, coinsWon) {
+      coinPoolPopupText.textContent = `${coinsWon} pièces !`;
+      coinPoolPopup.style.display = 'flex';
+      setTimeout(() => {
+          coinPoolPopup.classList.add('active');
+      }, 10);
+      
+      addWinner(userName, `${coinsWon} 💰`);
     }
 
     function closeRosePoolPopupFunc() {
       rosePoolPopup.classList.remove('active');
       setTimeout(() => {
           rosePoolPopup.style.display = 'none';
+      }, 300);
+    }
+    
+    function closeCoinPoolPopupFunc() {
+      coinPoolPopup.classList.remove('active');
+      setTimeout(() => {
+          coinPoolPopup.style.display = 'none';
       }, 300);
     }
 
@@ -1983,6 +2108,8 @@
         totalCoins,
         rosePool,
         hitsSinceLastPoolAddition,
+        coinPool,
+        hitsSinceLastCoinPoolAddition,
         totalHits,
         hitsUntilCoin,
         rosesEarnedThisGold,
@@ -2010,7 +2137,6 @@
         if (savedData) {
           const saveData = JSON.parse(savedData);
           
-          // Restaurer toutes les données
           currentDifficulty = saveData.currentDifficulty || 'easy';
           maxHP = saveData.maxHP;
           currentHP = saveData.currentHP;
@@ -2019,8 +2145,10 @@
           pokemon1MaxHP = saveData.pokemon1MaxHP || 200;
           pokemon2MaxHP = saveData.pokemon2MaxHP || 500;
           totalCoins = saveData.totalCoins || 0;
-          rosePool = saveData.rosePool || 0;
+          rosePool = saveData.rosePool || 1000;
           hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
+          coinPool = saveData.coinPool || 0;
+          hitsSinceLastCoinPoolAddition = saveData.hitsSinceLastCoinPoolAddition || 0;
           totalHits = saveData.totalHits || 0;
           hitsUntilCoin = saveData.hitsUntilCoin || 4;
           rosesEarnedThisGold = saveData.rosesEarnedThisGold || 0;
@@ -2028,7 +2156,6 @@
           winnersList = saveData.winnersList || [];
           attackMode = saveData.attackMode || 1;
           
-          // Mettre à jour l'interface
           document.querySelectorAll('.difficulty-btn').forEach(btn => {
             btn.classList.remove('active');
           });
@@ -2036,10 +2163,8 @@
           
           goldBar.style.backgroundImage = `url('${hiveImages[currentHiveIndex]}')`;
           
-          // Mettre à jour le mode d'attaque
           setAttackMode(attackMode);
           
-          // Mettre à jour l'état des Pokémon
           if (pokemon1HP <= 0) {
             document.getElementById('pokemon1').classList.add('defeated');
           } else {
@@ -2052,10 +2177,9 @@
             document.getElementById('pokemon2').classList.remove('defeated');
           }
           
-          // Mettre à jour les affichages
           updateUI();
           updateWinnersDisplay();
-          updatePoolDisplay();
+          updateAllPoolDisplays();
           
           message.textContent = "✅ Sauvegarde automatique chargée !";
           
@@ -2065,9 +2189,9 @@
             saveIndicator.classList.remove('show');
           }, 2000);
           
-          return true; // Indiquer que la sauvegarde a été chargée
+          return true;
         }
-        return false; // Pas de sauvegarde trouvée
+        return false;
       } catch (error) {
         console.error("Erreur lors du chargement de la sauvegarde automatique:", error);
         message.textContent = "❌ Erreur lors du chargement de la sauvegarde automatique";
@@ -2078,7 +2202,7 @@
     function startAutoSaveInterval() {
       autoSaveInterval = setInterval(() => {
         autoSave();
-      }, 30000); // 30 secondes
+      }, 30000);
     }
 
     function exportSaveData() {
@@ -2093,6 +2217,8 @@
         totalCoins,
         rosePool,
         hitsSinceLastPoolAddition,
+        coinPool,
+        hitsSinceLastCoinPoolAddition,
         totalHits,
         hitsUntilCoin,
         rosesEarnedThisGold,
@@ -2131,7 +2257,6 @@
           try {
             const saveData = JSON.parse(event.target.result);
             
-            // Restaurer toutes les données
             currentDifficulty = saveData.currentDifficulty || 'easy';
             maxHP = saveData.maxHP;
             currentHP = saveData.currentHP;
@@ -2140,8 +2265,10 @@
             pokemon1MaxHP = saveData.pokemon1MaxHP || 200;
             pokemon2MaxHP = saveData.pokemon2MaxHP || 500;
             totalCoins = saveData.totalCoins || 0;
-            rosePool = saveData.rosePool || 0;
+            rosePool = saveData.rosePool || 1000;
             hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
+            coinPool = saveData.coinPool || 0;
+            hitsSinceLastCoinPoolAddition = saveData.hitsSinceLastCoinPoolAddition || 0;
             totalHits = saveData.totalHits || 0;
             hitsUntilCoin = saveData.hitsUntilCoin || 4;
             rosesEarnedThisGold = saveData.rosesEarnedThisGold || 0;
@@ -2149,7 +2276,6 @@
             winnersList = saveData.winnersList || [];
             attackMode = saveData.attackMode || 1;
             
-            // Mettre à jour l'interface
             document.querySelectorAll('.difficulty-btn').forEach(btn => {
               btn.classList.remove('active');
             });
@@ -2173,7 +2299,7 @@
             
             updateUI();
             updateWinnersDisplay();
-            updatePoolDisplay();
+            updateAllPoolDisplays();
             
             message.textContent = "✅ Sauvegarde importée avec succès !";
             
@@ -2222,8 +2348,11 @@
       lastHitTime = 0;
       isAttacking = false;
       
-      rosePool = 0;
-      hitsSinceLastPoolAddition = 0;
+      // NE PAS RÉINITIALISER LES POOLS ICI - ils doivent conserver leur valeur
+      // rosePool = 1000; // LIGNE SUPPRIMÉE
+      // hitsSinceLastPoolAddition = 0; // LIGNE SUPPRIMÉE
+      // coinPool = 0; // LIGNE SUPPRIMÉE
+      // hitsSinceLastCoinPoolAddition = 0; // LIGNE SUPPRIMÉE
       
       document.getElementById('pokemon1').classList.remove('defeated');
       document.getElementById('pokemon2').classList.remove('defeated');
@@ -2237,10 +2366,11 @@
       closeVictoryPopup();
       closeCoinsPopupFunc();
       closeRosePoolPopupFunc();
+      closeCoinPoolPopupFunc();
       comboIndicator.style.display = "none";
       
       updateWinnersDisplay();
-      updatePoolDisplay();
+      updateAllPoolDisplays();
       
       autoSave();
     }
@@ -2254,13 +2384,12 @@
     exportBtn.addEventListener("click", exportSaveData);
     importBtn.addEventListener("click", importSaveData);
 
-    // Event listener pour le panneau admin
     setForceJackpotBtn.addEventListener("click", () => {
       let turns = parseInt(forceJackpotInput.value, 10);
       if (isNaN(turns) || turns < 1) turns = 1;
       forceJackpotCounter = turns;
       forceJackpotInput.value = forceJackpotCounter;
-      adminMessage.textContent = `Jackpot forcé dans ${forceJackpotCounter} coups!`;
+      adminMessage.textContent = `Jackpot 🌹 forcé dans ${forceJackpotCounter} coups!`;
     });
 
     document.getElementById("mode1").addEventListener("click", () => setAttackMode(1));
@@ -2279,6 +2408,7 @@
     closePopupBtn.addEventListener('click', closeVictoryPopup);
     closeCoinsPopupBtn.addEventListener('click', closeCoinsPopupFunc);
     closeRosePoolPopupBtn.addEventListener('click', closeRosePoolPopupFunc);
+    closeCoinPoolPopupBtn.addEventListener('click', closeCoinPoolPopupFunc);
 
     victoryPopup.addEventListener('click', function(e) {
       if (e.target === this) {
@@ -2295,6 +2425,12 @@
     rosePoolPopup.addEventListener('click', function(e) {
       if (e.target === this) {
         closeRosePoolPopupFunc();
+      }
+    });
+    
+    coinPoolPopup.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeCoinPoolPopupFunc();
       }
     });
 
@@ -2370,7 +2506,6 @@
     // Initialisation
     const saveLoaded = loadAutoSave();
     if (!saveLoaded) {
-      // Si aucune sauvegarde n'a été chargée, initialiser le jeu normalement
       initGame();
     }
     startAutoSaveInterval();
