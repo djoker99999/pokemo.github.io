@@ -879,6 +879,90 @@
       opacity: 1;
     }
 
+    /* CSS POUR LES DÉGÂTS FLOTTANTS */
+    .floating-text {
+      position: absolute;
+      font-size: 1.8em;
+      font-weight: bold;
+      color: red;
+      text-shadow: 0 0 5px black;
+      pointer-events: none;
+      z-index: 1001;
+      animation: floatDamage 1.5s ease-out forwards;
+      white-space: nowrap;
+    }
+
+    @keyframes floatDamage {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(0.8);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(1.3);
+      }
+    }
+
+    /* CSS POUR LE PANNEAU ADMIN */
+    .admin-panel {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #ff0000;
+      border-radius: 10px;
+      padding: 15px;
+      z-index: 1002; /* Au-dessus des autres panneaux */
+      cursor: move;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+      width: 220px;
+      text-align: left;
+    }
+    .admin-panel h3 {
+      color: #ff0000;
+      text-align: center;
+      margin-bottom: 10px;
+      user-select: none;
+      font-size: 1.1em;
+    }
+    .admin-panel .admin-field {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      justify-content: space-between;
+    }
+    .admin-panel label {
+      font-size: 0.9em;
+    }
+    .admin-panel input {
+      width: 60px;
+      background: #333;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 5px;
+      padding: 3px;
+    }
+    .admin-panel button {
+      width: 100%;
+      background: linear-gradient(45deg, #c00, #f33);
+      font-size: 14px;
+      padding: 8px;
+    }
+    .admin-panel button:hover {
+      background: linear-gradient(45deg, #f33, #f66);
+    }
+    #adminMessage {
+      font-size: 0.9em;
+      color: #ff9999;
+      text-align: center;
+      margin-top: 10px;
+      min-height: 15px;
+      font-weight: bold;
+    }
+
+
     @media (min-width: 768px) {
       .game-container {
         padding: 30px;
@@ -964,11 +1048,28 @@
         left: 10px;
         top: 80px;
       }
+      
+      /* AJOUT pour le panneau admin sur petit écran */
+      .admin-panel {
+        max-width: 180px;
+        top: 280px;
+        left: 10px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="save-indicator" id="saveIndicator">Sauvegarde automatique...</div>
+
+  <div class="admin-panel" id="adminPanel">
+    <h3>Admin Panel</h3>
+    <div class="admin-field">
+      <label for="forceJackpotTurns">Jackpot dans :</label>
+      <input type="number" id="forceJackpotTurns" value="100" min="1">
+    </div>
+    <button id="setForceJackpotBtn">Forcer Jackpot</button>
+    <div id="adminMessage"></div>
+  </div>
 
   <div class="pool-display" id="poolDisplay">
     <h3>🌹 Pool de Roses</h3>
@@ -1115,7 +1216,10 @@
     // Liste des gagnants
     let winnersList = [];
 
-    // Liste des images de ruche
+    // VARIABLE pour le jackpot
+    let forceJackpotCounter = -1; // -1 = désactivé
+
+    // Liste des images de ruche (AVEC LES 7 NOUVELLES IMAGES)
     const hiveImages = [
       'https://i.gifer.com/4o45.gif',
       'https://i.gifer.com/3nRA.gif',
@@ -1172,6 +1276,12 @@
     const exportBtn = document.getElementById("exportBtn");
     const importBtn = document.getElementById("importBtn");
 
+    // Éléments DOM pour le panneau admin
+    const adminPanel = document.getElementById("adminPanel");
+    const forceJackpotInput = document.getElementById("forceJackpotTurns");
+    const setForceJackpotBtn = document.getElementById("setForceJackpotBtn");
+    const adminMessage = document.getElementById("adminMessage");
+
     const impactEffects = ["💥", "🔥", "⭐", "💫", "✨", "💢"];
 
     function makeDraggable(element) {
@@ -1181,6 +1291,10 @@
       
       function dragMouseDown(e) {
         e = e || window.event;
+        // Empêcher le drag si on clique sur un input ou un bouton dans le panneau
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') {
+          return;
+        }
         e.preventDefault();
         pos3 = e.clientX;
         pos4 = e.clientY;
@@ -1207,6 +1321,7 @@
 
     makeDraggable(winnersBoard);
     makeDraggable(poolDisplay);
+    makeDraggable(adminPanel); // Rendre le panneau admin déplaçable
 
     function initAudioContext() {
       try {
@@ -1351,6 +1466,39 @@
         effect.remove();
       }, 1000);
     }
+    
+    // FONCTION pour afficher les dégâts flottants
+    function showFloatingText(targetId, text, color = '#ff4d4d') {
+      const textEl = document.createElement('div');
+      textEl.className = 'floating-text';
+      textEl.textContent = text;
+      textEl.style.color = color;
+
+      let top = '50%';
+      let left = '50%';
+      
+      if (targetId === 'pokemon1') {
+        left = '20%';
+        top = '45%';
+      } else if (targetId === 'pokemon2') {
+        left = '80%';
+        top = '45%';
+      } else if (targetId === 'goldBar') {
+        left = '50%';
+        top = '40%';
+      }
+
+      // Ajouter un décalage aléatoire
+      textEl.style.top = `calc(${top} + ${Math.random() * 40 - 20}px)`;
+      textEl.style.left = `calc(${left} + ${Math.random() * 40 - 20}px)`;
+      
+      document.querySelector('.gold-container').appendChild(textEl);
+
+      setTimeout(() => {
+        textEl.remove();
+      }, 1450); // Doit correspondre à la durée de l'animation
+    }
+
 
     function updateCombo() {
       const currentTime = Date.now();
@@ -1445,11 +1593,28 @@
       }, 1500);
     }
 
+    // MODIFICATION DE LA FONCTION ATTACK
     function attack() {
       if ((currentHP <= 0 && pokemon1HP <= 0 && pokemon2HP <= 0) || isAttacking) return;
       
       isAttacking = true;
       
+      // Compteurs de dégâts pour cette attaque
+      let damageToHive = 0;
+      let damageToPokemon1 = 0;
+      let damageToPokemon2 = 0;
+
+      // Logique du jackpot forcé
+      let forcedJackpot = false;
+      if (forceJackpotCounter > 0) {
+        forceJackpotCounter--;
+        adminMessage.textContent = `Jackpot dans ${forceJackpotCounter} coups...`;
+        if (forceJackpotCounter === 0) {
+          forcedJackpot = true;
+          adminMessage.textContent = `JACKPOT FORCÉ !`;
+        }
+      }
+
       let hits = attackMode;
       let rosesEarned = 0;
       let wasCracked = goldBar.classList.contains('cracked');
@@ -1491,6 +1656,7 @@
         if (randomTarget === 'hive') {
           totalHits++;
           currentHP--;
+          damageToHive++; // incrémenter le compteur
           
           if (attackMode <= 30) {
             createHitParticles();
@@ -1511,15 +1677,27 @@
             updatePoolDisplay();
           }
           
-          if (rosePool > 0 && Math.random() < 0.002) {
+          // Logique du jackpot
+          const jackpotChance = (rosePool > 0 && Math.random() < 0.002);
+          if (jackpotChance || (forcedJackpot && i === 0)) { // se déclenche au hasard OU si forcé
             const poolPercentage = Math.floor(Math.random() * 41) + 10;
             const rosesWon = Math.floor(rosePool * (poolPercentage / 100));
             rosePool -= rosesWon;
             showRosePoolPopup("Dresseur", rosesWon, poolPercentage);
             updatePoolDisplay();
+
+            // Réinitialiser le jackpot forcé
+            if (forcedJackpot) {
+              forcedJackpot = false;
+              forceJackpotCounter = -1; // Désactiver le compteur
+              setTimeout(() => { // Effacer le message après un délai
+                  if (adminMessage.textContent.startsWith('JACKPOT')) adminMessage.textContent = '';
+              }, 2000);
+            }
           }
         } else if (randomTarget === 'pokemon1') {
           pokemon1HP--;
+          damageToPokemon1++; // incrémenter le compteur
           if (pokemon1HP <= 0) {
             const coinsEarned = getRandomCoins(30, 150);
             totalCoins += coinsEarned;
@@ -1531,6 +1709,7 @@
           }
         } else if (randomTarget === 'pokemon2') {
           pokemon2HP--;
+          damageToPokemon2++; // incrémenter le compteur
           if (pokemon2HP <= 0) {
             const coinsEarned = getRandomCoins(30, 150);
             totalCoins += coinsEarned;
@@ -1550,9 +1729,14 @@
         gameContainer.classList.add(shakeType);
       }
       
-      // if (rosesEarned > 0) {
-      //   showRoseGain(rosesEarned);
-      // }
+      // Afficher les dégâts flottants totaux
+      if (damageToHive > 0) showFloatingText('goldBar', `-${damageToHive} HP`, '#ffc84d'); // Dégâts jaunes pour la ruche
+      if (damageToPokemon1 > 0) showFloatingText('pokemon1', `-${damageToPokemon1} HP`, '#ff4d4d');
+      if (damageToPokemon2 > 0) showFloatingText('pokemon2', `-${damageToPokemon2} HP`, '#ff4d4d');
+      
+      if (rosesEarned > 0) {
+        // showRoseGain(rosesEarned); // LIGNE COMMENTÉE (DÉSACIVÉE)
+      }
       
       updateUI();
       
@@ -2069,6 +2253,15 @@
 
     exportBtn.addEventListener("click", exportSaveData);
     importBtn.addEventListener("click", importSaveData);
+
+    // Event listener pour le panneau admin
+    setForceJackpotBtn.addEventListener("click", () => {
+      let turns = parseInt(forceJackpotInput.value, 10);
+      if (isNaN(turns) || turns < 1) turns = 1;
+      forceJackpotCounter = turns;
+      forceJackpotInput.value = forceJackpotCounter;
+      adminMessage.textContent = `Jackpot forcé dans ${forceJackpotCounter} coups!`;
+    });
 
     document.getElementById("mode1").addEventListener("click", () => setAttackMode(1));
     document.getElementById("mode10").addEventListener("click", () => setAttackMode(10));
