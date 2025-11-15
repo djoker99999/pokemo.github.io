@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JEREM BATTLEBOX</title>
   <style>
-    /* Tous les styles CSS précédents restent identiques */
     * {
       margin: 0;
       padding: 0;
@@ -332,27 +331,27 @@
       filter: grayscale(100%) brightness(0.3);
       animation: knockout 1.5s ease-out forwards;
     }
-    
-    .jackpot-bar-container {
+
+    .pool-bar-container {
       width: 80%;
       max-width: 400px;
       height: 30px;
       background: rgba(0, 0, 0, 0.5);
-      border: 2px solid #ff69b4;
+      border: 2px solid #ffd700;
       border-radius: 15px;
       margin: 10px auto 0;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
     }
-    .jackpot-bar-progress {
+    .pool-bar-progress {
       width: 0%;
       height: 100%;
-      background: linear-gradient(45deg, #ff69b4, #ff85c8);
+      background: linear-gradient(45deg, #ffd700, #ffed4a);
       border-radius: 12px;
       transition: width 0.5s ease;
     }
-    .jackpot-bar-text {
+    .pool-bar-text {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -840,39 +839,25 @@
       border-radius: 15px;
       z-index: 100;
       max-width: 220px;
-      border: 2px solid rgba(255, 105, 180, 0.7);
+      border: 2px solid rgba(255, 215, 0, 0.7);
       backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
       cursor: move;
     }
 
     .pool-display h3 {
-      color: #ff69b4;
+      color: #ffd700;
       font-size: 1em;
       margin-bottom: 10px;
       text-align: center;
-      text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
-      user-select: none;
-    }
-    
-    #coinPoolDisplay {
-      top: 330px;
-      left: 10px;
-      border: 2px solid rgba(255, 215, 0, 0.7);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-    }
-    #coinPoolDisplay h3 {
-      color: #ffd700;
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    }
-    #coinPoolAmount {
-      color: #ffd700;
+      user-select: none;
     }
 
     .pool-amount {
       font-size: 1.2em;
       font-weight: bold;
-      color: #ff69b4;
+      color: #ffd700;
       text-align: center;
       margin: 10px 0;
     }
@@ -948,64 +933,6 @@
       }
     }
 
-    .admin-panel {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.85);
-      border: 2px solid #ff0000;
-      border-radius: 10px;
-      padding: 15px;
-      z-index: 1002;
-      cursor: move;
-      backdrop-filter: blur(5px);
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-      width: 220px;
-      text-align: left;
-    }
-    .admin-panel h3 {
-      color: #ff0000;
-      text-align: center;
-      margin-bottom: 10px;
-      user-select: none;
-      font-size: 1.1em;
-    }
-    .admin-panel .admin-field {
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      justify-content: space-between;
-    }
-    .admin-panel label {
-      font-size: 0.9em;
-    }
-    .admin-panel input {
-      width: 60px;
-      background: #333;
-      color: white;
-      border: 1px solid #555;
-      border-radius: 5px;
-      padding: 3px;
-    }
-    .admin-panel button {
-      width: 100%;
-      background: linear-gradient(45deg, #c00, #f33);
-      font-size: 14px;
-      padding: 8px;
-    }
-    .admin-panel button:hover {
-      background: linear-gradient(45deg, #f33, #f66);
-    }
-    #adminMessage {
-      font-size: 0.9em;
-      color: #ff9999;
-      text-align: center;
-      margin-top: 10px;
-      min-height: 15px;
-      font-weight: bold;
-    }
-
     @media (min-width: 768px) {
       .game-container {
         padding: 30px;
@@ -1075,12 +1002,12 @@
         height: 200px;
       }
       
-      .jackpot-bar-container {
+      .pool-bar-container {
         width: 90%;
         max-width: 280px;
         height: 25px;
       }
-      .jackpot-bar-text {
+      .pool-bar-text {
         font-size: 14px;
       }
 
@@ -1100,38 +1027,12 @@
         left: 10px;
         top: 180px;
       }
-      
-      #coinPoolDisplay {
-        top: 330px;
-      }
-
-      .admin-panel {
-        max-width: 180px;
-        top: 480px;
-        left: 10px;
-      }
     }
   </style>
 </head>
 <body>
   <div class="save-indicator" id="saveIndicator">Sauvegarde automatique...</div>
 
-  <div class="admin-panel" id="adminPanel">
-    <h3>Admin Panel</h3>
-    <div class="admin-field">
-      <label for="forceJackpotTurns">Jackpot 🌹 dans :</label>
-      <input type="number" id="forceJackpotTurns" value="100" min="1">
-    </div>
-    <button id="setForceJackpotBtn">Forcer Jackpot 🌹</button>
-    <div id="adminMessage"></div>
-  </div>
-
-  <div class="pool-display" id="poolDisplay">
-    <h3>🌹 Pool de Roses</h3>
-    <div class="pool-amount" id="poolAmount">1000</div>
-    <div class="pool-chance">Chance de drop: 1/10000</div>
-  </div>
-  
   <div class="pool-display" id="coinPoolDisplay">
     <h3>💰 Pool de Pièces</h3>
     <div class="pool-amount" id="coinPoolAmount">0</div>
@@ -1176,9 +1077,9 @@
       <div class="hammer" id="hammer">🔨</div>
     </div>
     
-    <div class="jackpot-bar-container">
-      <div class="jackpot-bar-progress" id="jackpotBarProgress"></div>
-      <span class="jackpot-bar-text" id="jackpotBarText">Jackpot: 1000 🌹</span>
+    <div class="pool-bar-container">
+      <div class="pool-bar-progress" id="poolBarProgress"></div>
+      <span class="pool-bar-text" id="poolBarText">Pool de pièces: 0 💰</span>
     </div>
 
     <div class="instructions">
@@ -1248,16 +1149,6 @@
     </div>
   </div>
 
-  <div class="popup-overlay" id="rosePoolPopup">
-    <div class="popup-content">
-      <h3>🌹 Pool de Roses Gagné ! 🌹</h3>
-      <div style="font-size: 80px; margin: 20px 0;">🌹</div>
-      <p class="popup-reward-text" id="rosePoolPopupText" style="font-size: 2em; color: #ff69b4;"></p>
-      <div class="popup-victory-message">Incroyable ! Tu as gagné le pool de roses !</div>
-      <button class="popup-close-btn" id="closeRosePoolPopupBtn">Continuer</button>
-    </div>
-  </div>
-  
   <div class="popup-overlay" id="coinPoolPopup">
     <div class="popup-content">
       <h3>💰 Pool de Pièces Gagné ! 💰</h3>
@@ -1285,19 +1176,12 @@
     let pokemon1MaxHP, pokemon2MaxHP;
     let totalCoins = 0;
     
-    // Pool de roses (Jackpot)
-    let rosePool = 1000;
-    let hitsSinceLastPoolAddition = 0;
-    
     // Pool de pièces
     let coinPool = 0;
     let hitsSinceLastCoinPoolAddition = 0;
 
     // Liste des gagnants
     let winnersList = [];
-
-    // Variable pour le jackpot
-    let forceJackpotCounter = -1; // -1 = désactivé
 
     // Liste des images de ruche
     const hiveImages = [
@@ -1343,16 +1227,9 @@
     const coinsPopupText = document.getElementById("coinsPopupText");
     const closeCoinsPopupBtn = document.getElementById("closeCoinsPopupBtn");
     
-    const rosePoolPopup = document.getElementById("rosePoolPopup");
-    const rosePoolPopupText = document.getElementById("rosePoolPopupText");
-    const closeRosePoolPopupBtn = document.getElementById("closeRosePoolPopupBtn");
-    
     const coinPoolPopup = document.getElementById("coinPoolPopup");
     const coinPoolPopupText = document.getElementById("coinPoolPopupText");
     const closeCoinPoolPopupBtn = document.getElementById("closeCoinPoolPopupBtn");
-    
-    const poolDisplay = document.getElementById("poolDisplay");
-    const poolAmount = document.getElementById("poolAmount");
     
     const coinPoolDisplay = document.getElementById("coinPoolDisplay");
     const coinPoolAmount = document.getElementById("coinPoolAmount");
@@ -1363,14 +1240,8 @@
     const exportBtn = document.getElementById("exportBtn");
     const importBtn = document.getElementById("importBtn");
 
-    // Éléments DOM pour le panneau admin
-    const adminPanel = document.getElementById("adminPanel");
-    const forceJackpotInput = document.getElementById("forceJackpotTurns");
-    const setForceJackpotBtn = document.getElementById("setForceJackpotBtn");
-    const adminMessage = document.getElementById("adminMessage");
-    
-    const jackpotBarProgress = document.getElementById("jackpotBarProgress");
-    const jackpotBarText = document.getElementById("jackpotBarText");
+    const poolBarProgress = document.getElementById("poolBarProgress");
+    const poolBarText = document.getElementById("poolBarText");
 
     const impactEffects = ["💥", "🔥", "⭐", "💫", "✨", "💢"];
 
@@ -1409,9 +1280,7 @@
     }
 
     makeDraggable(winnersBoard);
-    makeDraggable(poolDisplay);
     makeDraggable(coinPoolDisplay);
-    makeDraggable(adminPanel);
 
     function initAudioContext() {
       try {
@@ -1689,20 +1558,6 @@
       let damageToPokemon1 = 0;
       let damageToPokemon2 = 0;
 
-      let forcedJackpot = false;
-      if (forceJackpotCounter > 0) {
-        forceJackpotCounter--;
-        adminMessage.textContent = `Jackpot 🌹 dans ${forceJackpotCounter} coups...`;
-        if (forceJackpotCounter === 0) {
-          forcedJackpot = true;
-          adminMessage.textContent = `JACKPOT 🌹 FORCÉ !`;
-        }
-      }
-
-      let hits = attackMode;
-      let rosesEarned = 0;
-      let wasCracked = goldBar.classList.contains('cracked');
-      
       hammer.classList.add('hitting');
       playHitSound();
       updateCombo();
@@ -1710,6 +1565,9 @@
       let animationType = 'hit';
       let shakeType = '';
       let animationDuration = 400;
+      
+      // Déterminer le nombre de coups en fonction du mode d'attaque
+      let hits = attackMode;
       
       if (attackMode <= 10) {
         animationType = 'hit';
@@ -1750,16 +1608,7 @@
           hitsUntilCoin--;
           if (hitsUntilCoin <= 0) {
             rosesEarnedThisGold++;
-            rosesEarned++;
             hitsUntilCoin = 4;
-          }
-          
-          // Logique Pool de Roses (Jackpot)
-          hitsSinceLastPoolAddition++;
-          if (hitsSinceLastPoolAddition >= 100) {
-            rosePool += 5; // +5 roses tous les 100 coups
-            hitsSinceLastPoolAddition = 0;
-            updateAllPoolDisplays();
           }
           
           // Logique Pool de Pièces
@@ -1770,26 +1619,9 @@
             updateAllPoolDisplays();
           }
           
-          // Chance de gagner le Jackpot de ROSES (1/10000)
-          const jackpotChance = (rosePool > 0 && Math.random() < 0.0001);
-          if (jackpotChance || (forcedJackpot && i === 0)) {
-            const rosesWon = rosePool;
-            rosePool = 1000; // Remise à 1000 roses
-            showRosePoolPopup("Dresseur", rosesWon);
-            updateAllPoolDisplays();
-
-            if (forcedJackpot) {
-              forcedJackpot = false;
-              forceJackpotCounter = -1;
-              setTimeout(() => {
-                  if (adminMessage.textContent.startsWith('JACKPOT')) adminMessage.textContent = '';
-              }, 2000);
-            }
-          }
-          
           // Chance de gagner le Pool de PIÈCES (1/2000)
-          const coinJackpotChance = (coinPool > 0 && Math.random() < 0.0005);
-          if (coinJackpotChance) {
+          const coinPoolChance = (coinPool > 0 && Math.random() < 0.0005);
+          if (coinPoolChance) {
             const coinsWon = coinPool;
             coinPool = 0;
             showCoinPoolPopup("Dresseur", coinsWon);
@@ -1836,10 +1668,6 @@
       
       updateUI();
       
-      if (!wasCracked && goldBar.classList.contains('cracked')) {
-        playCrackSound();
-      }
-      
       setTimeout(() => {
         if (animationType) {
           goldBar.classList.remove(animationType);
@@ -1857,17 +1685,6 @@
         
         autoSave();
       }, animationDuration);
-    }
-
-    function showRoseGain(amount) {
-      const roseDisplay = document.createElement('div');
-      roseDisplay.className = 'coins-display';
-      roseDisplay.textContent = `+${amount} 🌹`;
-      goldBar.parentElement.appendChild(roseDisplay);
-      
-      setTimeout(() => {
-        roseDisplay.remove();
-      }, 1000);
     }
 
     function updateUI() {
@@ -2038,33 +1855,19 @@
     }
 
     function updateAllPoolDisplays() {
-      // 1. Panneau Pool de Roses
-      poolAmount.textContent = rosePool;
-      
-      // 2. Panneau Pool de Pièces
+      // 1. Panneau Pool de Pièces
       coinPoolAmount.textContent = coinPool;
 
-      // 3. Barre de Jackpot (pour les roses)
-      jackpotBarText.textContent = `Jackpot: ${rosePool} 🌹`;
-      const baseJackpot = 1000;
-      const visualMax = 5000; // La barre est "pleine" à 5000 (1000 base + 4000 bonus)
-      let percent = ((rosePool - baseJackpot) / (visualMax - baseJackpot)) * 100;
+      // 2. Barre de Pool (pour les pièces)
+      poolBarText.textContent = `Pool de pièces: ${coinPool} 💰`;
+      const visualMax = 5000; // La barre est "pleine" à 5000 pièces
+      let percent = (coinPool / visualMax) * 100;
       if (percent < 0) percent = 0;
       if (percent > 100) percent = 100;
       
-      jackpotBarProgress.style.width = percent + '%';
+      poolBarProgress.style.width = percent + '%';
     }
 
-    function showRosePoolPopup(userName, rosesWon) {
-      rosePoolPopupText.textContent = `${rosesWon} roses !`;
-      rosePoolPopup.style.display = 'flex';
-      setTimeout(() => {
-          rosePoolPopup.classList.add('active');
-      }, 10);
-      
-      addWinner(userName, `${rosesWon} 🌹`);
-    }
-    
     function showCoinPoolPopup(userName, coinsWon) {
       coinPoolPopupText.textContent = `${coinsWon} pièces !`;
       coinPoolPopup.style.display = 'flex';
@@ -2075,13 +1878,6 @@
       addWinner(userName, `${coinsWon} 💰`);
     }
 
-    function closeRosePoolPopupFunc() {
-      rosePoolPopup.classList.remove('active');
-      setTimeout(() => {
-          rosePoolPopup.style.display = 'none';
-      }, 300);
-    }
-    
     function closeCoinPoolPopupFunc() {
       coinPoolPopup.classList.remove('active');
       setTimeout(() => {
@@ -2106,8 +1902,6 @@
         pokemon1MaxHP,
         pokemon2MaxHP,
         totalCoins,
-        rosePool,
-        hitsSinceLastPoolAddition,
         coinPool,
         hitsSinceLastCoinPoolAddition,
         totalHits,
@@ -2145,8 +1939,6 @@
           pokemon1MaxHP = saveData.pokemon1MaxHP || 200;
           pokemon2MaxHP = saveData.pokemon2MaxHP || 500;
           totalCoins = saveData.totalCoins || 0;
-          rosePool = saveData.rosePool || 1000;
-          hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
           coinPool = saveData.coinPool || 0;
           hitsSinceLastCoinPoolAddition = saveData.hitsSinceLastCoinPoolAddition || 0;
           totalHits = saveData.totalHits || 0;
@@ -2215,8 +2007,6 @@
         pokemon1MaxHP,
         pokemon2MaxHP,
         totalCoins,
-        rosePool,
-        hitsSinceLastPoolAddition,
         coinPool,
         hitsSinceLastCoinPoolAddition,
         totalHits,
@@ -2265,8 +2055,6 @@
             pokemon1MaxHP = saveData.pokemon1MaxHP || 200;
             pokemon2MaxHP = saveData.pokemon2MaxHP || 500;
             totalCoins = saveData.totalCoins || 0;
-            rosePool = saveData.rosePool || 1000;
-            hitsSinceLastPoolAddition = saveData.hitsSinceLastPoolAddition || 0;
             coinPool = saveData.coinPool || 0;
             hitsSinceLastCoinPoolAddition = saveData.hitsSinceLastCoinPoolAddition || 0;
             totalHits = saveData.totalHits || 0;
@@ -2348,9 +2136,7 @@
       lastHitTime = 0;
       isAttacking = false;
       
-      // NE PAS RÉINITIALISER LES POOLS ICI - ils doivent conserver leur valeur
-      // rosePool = 1000; // LIGNE SUPPRIMÉE
-      // hitsSinceLastPoolAddition = 0; // LIGNE SUPPRIMÉE
+      // NE PAS RÉINITIALISER LE POOL DE PIÈCES ICI - il doit conserver sa valeur
       // coinPool = 0; // LIGNE SUPPRIMÉE
       // hitsSinceLastCoinPoolAddition = 0; // LIGNE SUPPRIMÉE
       
@@ -2365,7 +2151,6 @@
       
       closeVictoryPopup();
       closeCoinsPopupFunc();
-      closeRosePoolPopupFunc();
       closeCoinPoolPopupFunc();
       comboIndicator.style.display = "none";
       
@@ -2384,14 +2169,6 @@
     exportBtn.addEventListener("click", exportSaveData);
     importBtn.addEventListener("click", importSaveData);
 
-    setForceJackpotBtn.addEventListener("click", () => {
-      let turns = parseInt(forceJackpotInput.value, 10);
-      if (isNaN(turns) || turns < 1) turns = 1;
-      forceJackpotCounter = turns;
-      forceJackpotInput.value = forceJackpotCounter;
-      adminMessage.textContent = `Jackpot 🌹 forcé dans ${forceJackpotCounter} coups!`;
-    });
-
     document.getElementById("mode1").addEventListener("click", () => setAttackMode(1));
     document.getElementById("mode10").addEventListener("click", () => setAttackMode(10));
     document.getElementById("mode30").addEventListener("click", () => setAttackMode(30));
@@ -2407,7 +2184,6 @@
 
     closePopupBtn.addEventListener('click', closeVictoryPopup);
     closeCoinsPopupBtn.addEventListener('click', closeCoinsPopupFunc);
-    closeRosePoolPopupBtn.addEventListener('click', closeRosePoolPopupFunc);
     closeCoinPoolPopupBtn.addEventListener('click', closeCoinPoolPopupFunc);
 
     victoryPopup.addEventListener('click', function(e) {
@@ -2419,12 +2195,6 @@
     coinsPopup.addEventListener('click', function(e) {
       if (e.target === this) {
         closeCoinsPopupFunc();
-      }
-    });
-    
-    rosePoolPopup.addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeRosePoolPopupFunc();
       }
     });
     
