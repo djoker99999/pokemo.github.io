@@ -104,6 +104,7 @@
       justify-content: center;
       gap: 10px;
       margin: 15px 0;
+      flex-wrap: wrap;
     }
 
     .difficulty-btn {
@@ -294,6 +295,11 @@
       animation: legendaryGlow 2s ease-in-out infinite alternate;
     }
 
+    .gold-bar.gotille {
+      filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.9)) brightness(1.4) hue-rotate(120deg);
+      animation: gotilleGlow 2s ease-in-out infinite alternate;
+    }
+
     @keyframes redGlow {
       0% { filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8)) brightness(1.1) hue-rotate(330deg); }
       100% { filter: drop-shadow(0 0 35px rgba(255, 50, 50, 1)) brightness(1.3) hue-rotate(320deg); }
@@ -307,6 +313,11 @@
     @keyframes legendaryGlow {
       0% { filter: drop-shadow(0 0 35px rgba(255, 165, 0, 0.9)) brightness(1.3) hue-rotate(180deg); }
       100% { filter: drop-shadow(0 0 45px rgba(255, 200, 0, 1)) brightness(1.5) hue-rotate(160deg); }
+    }
+
+    @keyframes gotilleGlow {
+      0% { filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.9)) brightness(1.4) hue-rotate(120deg); }
+      100% { filter: drop-shadow(0 0 50px rgba(0, 200, 255, 1)) brightness(1.6) hue-rotate(100deg); }
     }
 
     .gold-bar.hit {
@@ -761,6 +772,10 @@
       background: linear-gradient(45deg, #FF9800, #FF5722);
     }
 
+    .difficulty-badge.gotille {
+      background: linear-gradient(45deg, #00BCD4, #03A9F4);
+    }
+
     .winners-board {
       position: fixed;
       top: 10px;
@@ -1064,6 +1079,9 @@
       </div>
       <div class="difficulty-btn legendary" data-difficulty="legendary">
         <img src="https://i.ibb.co/SXgvrJhm/IMG-6173.png" alt="Légendaire">
+      </div>
+      <div class="difficulty-btn gotille" data-difficulty="gotille">
+        <img src="https://i.ibb.co/tpjTH86M/unnamed-6-Photoroom.png" alt="Gotille">
       </div>
     </div>
     
@@ -1503,6 +1521,10 @@
           pokemon1MaxHP = 1600;
           pokemon2MaxHP = 4000;
           break;
+        case "gotille":
+          pokemon1MaxHP = 3200;
+          pokemon2MaxHP = 8000;
+          break;
       }
       
       pokemon1HP = pokemon1MaxHP;
@@ -1516,7 +1538,8 @@
       setTimeout(() => {
         let difficultyName = currentDifficulty === "easy" ? "facile" : 
                              currentDifficulty === "hard" ? "difficile" : 
-                             currentDifficulty === "extreme" ? "extrême" : "légendaire";
+                             currentDifficulty === "extreme" ? "extrême" : 
+                             currentDifficulty === "legendary" ? "légendaire" : "gotille";
         message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
       }, 2000);
       
@@ -1531,7 +1554,8 @@
       setTimeout(() => {
         let difficultyName = currentDifficulty === "easy" ? "facile" : 
                              currentDifficulty === "hard" ? "difficile" : 
-                             currentDifficulty === "extreme" ? "extrême" : "légendaire";
+                             currentDifficulty === "extreme" ? "extrême" : 
+                             currentDifficulty === "legendary" ? "légendaire" : "gotille";
         message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
       }, 2000);
       
@@ -1702,7 +1726,8 @@
         } else {
           let difficultyName = currentDifficulty === "easy" ? "facile" : 
                                currentDifficulty === "hard" ? "difficile" : 
-                               currentDifficulty === "extreme" ? "extrême" : "légendaire";
+                               currentDifficulty === "extreme" ? "extrême" : 
+                               currentDifficulty === "legendary" ? "légendaire" : "gotille";
           message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
         }
       }
@@ -1738,6 +1763,12 @@
           victoryText = "Légendaire ! Tu as vaincu le Pokémon légendaire et gagné 10999 pièces !";
           rewardImg = "https://i.ibb.co/SXgvrJhm/IMG-6173.png";
           coinsReward = 10999;
+          break;
+        case "gotille":
+          rewardText = "30000 pièces !";
+          victoryText = "Incroyable ! Tu as vaincu le Pokémon Gotille et gagné 30000 pièces !";
+          rewardImg = "https://i.ibb.co/tpjTH86M/unnamed-6-Photoroom.png";
+          coinsReward = 30000;
           break;
       }
       
@@ -2124,6 +2155,11 @@
           pokemon1MaxHP = 1600;
           pokemon2MaxHP = 4000;
           break;
+        case "gotille":
+          maxHP = 150000;
+          pokemon1MaxHP = 3200;
+          pokemon2MaxHP = 8000;
+          break;
       }
 
       currentHP = maxHP;
@@ -2146,7 +2182,8 @@
       goldBar.className = "gold-bar " + currentDifficulty;
       let difficultyName = currentDifficulty === "easy" ? "facile" : 
                            currentDifficulty === "hard" ? "difficile" : 
-                           currentDifficulty === "extreme" ? "extrême" : "légendaire";
+                           currentDifficulty === "extreme" ? "extrême" : 
+                           currentDifficulty === "legendary" ? "légendaire" : "gotille";
       message.textContent = `Pokémon ${difficultyName} - À tout moment le Pokémon peut être vaincu...`;
       
       closeVictoryPopup();
@@ -2258,6 +2295,10 @@
         case 'l':
         case 'L':
           setDifficulty('legendary');
+          break;
+        case 'g':
+        case 'G':
+          setDifficulty('gotille');
           break;
         case 'Escape':
           closeVictoryPopup();
